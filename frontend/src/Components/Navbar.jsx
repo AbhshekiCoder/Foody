@@ -1,7 +1,7 @@
 import React from 'react'
 import logo from '../assets/logo.png';
 import Sidebar from './Sidebar';
-export default function Navbar() {
+export default function Navbar({login}) {
   let num = 1;
   function sidebar(){
     num++;
@@ -43,7 +43,7 @@ export default function Navbar() {
 
     </div>
     <div className='flex h-full items-center  max-lg:hidden'>
-    <i class="fa-solid fa-user mr-3 text-gray-600"></i><span className=' text-gray-500 font-semibold  hover:text-orange-600'>User</span>
+    <i class="fa-solid fa-user mr-3 text-gray-600"></i><span className=' text-gray-500 font-semibold  hover:text-orange-600' onClick={login}>Login</span>
 
     </div>
     <div className='flex h-full items-center  max-lg:hidden'>
