@@ -1,3 +1,3 @@
-let url = "http://localhost:3000/"
+let url = "https://swiggy-clone-1-iwnt.onrender.com/";
 
 export default url;
