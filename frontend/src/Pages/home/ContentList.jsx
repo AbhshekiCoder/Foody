@@ -4,11 +4,11 @@ export default function ContentList() {
   return (
     <div className=' mt-9 pb-6 '>
     <div className=' '>
-    <h1 className='text-2xl font-bold'>Restaurant with online food in your city</h1>
+    <h1 className='text-2xl font-bold max-md:p-3'>Restaurant with online food in your city</h1>
    
 
     </div>
-    <div className='    contentlist    mt-3  ' style={{maxWidth: "1100px"}}>
+    <div className='    contentlist    mt-3  max-md:pl-3 ' style={{maxWidth: "1100px"}}>
     <div className=' mr-6 '>
     <div className='w-full '>
     <img src={dish1} className=' h-full  w-full rounded-xl '/>

@@ -2,7 +2,10 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import login from '../assets/login.png'
 import Signup from './Signup';
-export default function Login() {
+import url from '../misc/url';
+import axios from 'axios';
+import { Message } from 'rsuite';
+export default function Login({signin, type}) {
     let [num, setNum] = useState(false);
     
     function signup(){
@@ -16,6 +19,7 @@ export default function Login() {
     function close_login_modal(){
         document.querySelector('.signin').style.display  = "none"
     }
+   
   return (
     <div className='signin modal w-100 h-100 '>
     <div className='login-modal z-10 p-6'>
@@ -40,7 +44,11 @@ export default function Login() {
 
         </div>
         <div className='mt-6'>
-        {num?<Signup/>:<form name = "login">
+        {num?<Signup/>:<form name = "login" onSubmit={signin}>
+        <div className='message w-fit h-6 mb-6  hidden '>
+        <Message type = {type} id = "message" className='h-9 flex justify-center items-center text-green-500'>hello</Message>
+
+        </div>
             <div className='max-w-96 h-16'>
                 <input type = "text" className='w-full h-full border pl-3 outline-none' placeholder='email' name = "email" required/>
             </div>
