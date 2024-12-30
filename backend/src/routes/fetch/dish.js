@@ -3,6 +3,6 @@ import dish from '../../controller/fetch/dish.js';
 
 let dishes = express.Router();
 
-dishes.post('/dishes',  dish);
+dishes.post('/dishes', dish);
 
 export default dishes;
