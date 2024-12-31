@@ -19,6 +19,11 @@ export default function Profile({logout}) {
 
     </div>
     <div className='p-3'>
+    <Link to = "/login" className='text-black text-md font-semibold hover:no-underline'>Admin</Link>
+
+
+    </div>
+    <div className='p-3'>
     <Link to = "/" className='text-black text-md  hover:no-underline font-semibold ' onClick={logout}>Logout</Link>
 
 
