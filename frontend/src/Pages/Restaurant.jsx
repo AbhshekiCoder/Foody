@@ -1,6 +1,13 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import url from '../misc/url';
+import { Swiper, SwiperSlide } from 'swiper/react';
+
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/effect-cards';
+import { EffectCards } from 'swiper/modules';
+
 
 export default function Restaurant() {
   let [data, setData] = useState();
@@ -31,7 +38,31 @@ export default function Restaurant() {
     dish_fetch()
 
   },[])
+  function dish_filter(e){
+    let name = e.target.value;
+    let array = dish.filter(Element => Element.name.includes(name))
+    console.log(array)
+    setDish(array)
+  }
   return (
+    <>  
+    <div className='max-w-24 h-24 absolute fixed' style={{marginLeft: "83%", top: "70%"}}>
+    <h1 className='text-lg flex justify-center'>Menu</h1>
+    <Swiper
+        effect={'cards'}
+        grabCursor={true}
+        modules={[EffectCards]}
+        className="mySwiper w-full h-full">
+        {dish?dish.map(Element =>(
+          <SwiperSlide className='bg-green-500 rounded-lg flex  text-center items-center text-white font-bold p-1 ' style={{display: "flex", justifyContent: "center", alignItems: "center"}}> {Element.name}</SwiperSlide>
+
+        )):''}
+      
+       
+       
+      </Swiper>
+
+    </div>
     <div className='mt-16'>
     <div className='max-w-4xl m-auto'>
     <div className='p-3 '>
@@ -57,7 +88,7 @@ export default function Restaurant() {
       Menu
     </div>
     <div className='border flex rounded-lg bg-gray-100 p-1 items-center'>
-    <input type='text' placeholder='search any dishes' className=' w-11/12 h-10 outline-none bg-gray-100  content-center ' /> <i class="fa-solid fa-magnifying-glass mr-3 text-orange-600 ml-6" ></i>
+    <input type='text' placeholder='search any dishes' className=' w-11/12 h-10 outline-none bg-gray-100  content-center ' onChange={dish_filter} /> <i class="fa-solid fa-magnifying-glass mr-3 text-orange-600 ml-6" ></i>
 
 
     </div>
@@ -107,5 +138,6 @@ export default function Restaurant() {
     </div>
       
     </div>
+    </>
   )
 }
