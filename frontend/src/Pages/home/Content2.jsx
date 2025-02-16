@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import dish1 from '../../assets/dish1.png'
 import axios from 'axios';
-import url from '../../misc/url';
+import url from '../../misc/url.js';
 import { useNavigate } from 'react-router-dom';
 
 export default function Content2() {

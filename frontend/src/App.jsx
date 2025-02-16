@@ -17,7 +17,7 @@ import Admin from './Pages/Admin';
 import Search from './Pages/Search';
 import Restaurant from './Pages/Restaurant';
 
-import user from './misc/user';
+
 import DashBoard from './Pages/DashBoard';
 import { useDispatch } from 'react-redux';
 import { locationinfo } from './feature/location';

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import url from '../misc/url';
+import url from '../misc/url.js';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 // Import Swiper styles

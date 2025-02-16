@@ -4,7 +4,7 @@ import login from '../assets/login.png'
 import { useEffect } from 'react'
 import { defaultClassPrefix } from 'rsuite/esm/internals/utils'
 import axios from 'axios'
-import url from '../misc/url'
+import url from '../misc/url.js'
 export default function Singnin() {
     let navigate = useNavigate();
     useEffect(() =>{

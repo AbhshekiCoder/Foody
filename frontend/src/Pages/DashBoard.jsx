@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import {Drawer} from 'rsuite'
 import Location from '../misc/Location';
 import { useDispatch } from 'react-redux';
-import url from '../misc/url';
+import url from '../misc/url.js';
 import {GoogleMap, Marker, LoadScript} from '@react-google-maps/api'
 import { locationinfo } from '../feature/location';
 import axios from 'axios';

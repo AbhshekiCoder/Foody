@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import login from '../assets/login.png'
 import Signup from './Signup';
-import url from '../misc/url';
+
 import axios from 'axios';
 import { Message } from 'rsuite';
 

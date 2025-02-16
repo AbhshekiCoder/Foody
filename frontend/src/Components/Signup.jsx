@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import url from '../misc/url';
+import url from '../misc/url.js';
 import {Message} from 'rsuite';
 import axios from 'axios'
 import {Loader} from 'rsuite'

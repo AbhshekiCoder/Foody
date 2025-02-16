@@ -4,7 +4,7 @@ import Sidebar from './Sidebar';
 import {useSelector} from 'react-redux'
 import { useDispatch} from 'react-redux';
 import { userinfo } from '../feature/userinfo';
-import url from '../misc/url';
+import url from '../misc/url.js';
 import { useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';

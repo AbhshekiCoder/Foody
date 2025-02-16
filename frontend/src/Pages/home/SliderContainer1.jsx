@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import dish from '../../assets/dish.png'
 import axios from 'axios';
-import url from '../../misc/url';
+import url from '../../misc/url.js';
 export default function container1() {
   let [data, setData] = useState()
   function left(){

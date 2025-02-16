@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import login from '../assets/login.png'
 import { Link } from 'react-router-dom'
 import axios from 'axios';
-import url from '../misc/url';
+import url from '../misc/url.js';
 export default function Singnup() {
     let [file, setFile] = useState();
     

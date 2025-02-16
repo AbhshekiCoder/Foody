@@ -1,7 +1,7 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import url from '../misc/url'
+import url from '../misc/url.js'
 
 export default function Cart() {
     let address = useSelector((state) => state.location.value);
