@@ -3,6 +3,7 @@ import SliderContainer from './home/SliderContainer1'
 import '../CSS/Home.css'
 import Content2 from './home/Content2'
 import ContentList from './home/ContentList'
+import Location from '../misc/Location'
 export default function Home() {
   return (
   <>
@@ -13,6 +14,7 @@ export default function Home() {
     <SliderContainer/>
     <Content2/>
     <ContentList/>
+   
   </div>
   
   </>

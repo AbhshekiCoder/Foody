@@ -8,7 +8,7 @@ import admin from "../../modal/admin.js";
 
 
 let dish = async(req, res) =>{
-    let {name, description, email, type} = req.body;
+    let {name, description, email, type, price} = req.body;
    
      let result1 = await  admin.findOne({email: email});
    
@@ -20,7 +20,8 @@ let dish = async(req, res) =>{
         image:  fs.readFileSync(path.join(__dirname, '/images/' + req.file.filename)),
         id: result1._id,
         restaurant_name: result1.restaurant_name,
-        type: type
+        type: type,
+        price: price
     })
 
     let result = await dish.save();

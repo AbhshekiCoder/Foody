@@ -18,6 +18,12 @@ import Search from './routes/fetch/search.js';
 import dish_search from './routes/fetch/dishSearch.js';
 import restaurant_fetch from './routes/fetch/restaurant_fetch.js';
 import restaurant_data from './routes/fetch/restaurant_data.js';
+import cart from './routes/user/cart.js';
+import profileupdate from './routes/user/profileupdate.js';
+import cartDetail from './routes/fetch/cartDetail.js';
+import admin_profile_update from './routes/admin/admin_profile_update.js';
+import order from './routes/user/order.js';
+
 
 let app = express();
 dotenv.config()
@@ -41,6 +47,12 @@ app.use('/search', Search)
 app.use('/dish_search/:id', dish_search)
 app.use('/restaurant/:id', restaurant_fetch)
 app.use('/dish/:id', restaurant_data)
+app.use('/cart', cart)
+app.use('/profileUpdated', profileupdate)
+app.use('/cartDetail/:token', cartDetail)
+app.use('/admin_profile_update', admin_profile_update)
+app.use('/order', order)
+
 
 app.get('/', (req, res)=>{
     res.send("hello")

@@ -1,6 +1,9 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import dish from '../../assets/dish.png'
+import axios from 'axios';
+import url from '../../misc/url';
 export default function container1() {
+  let [data, setData] = useState()
   function left(){
     document.querySelector('.content1').scrollLeft -= 100;
   }
@@ -8,6 +11,21 @@ export default function container1() {
     document.querySelector('.content1').scrollLeft += 100;
 
   }
+  let content = async() =>{
+    let result = await axios.post(`${url}dishes/dishes`);
+    if(result.data){
+      console.log(data)
+      setData(result.data)
+    }
+    else{
+      console.log("something went wrong")
+    }
+
+  }
+  useEffect(()=>{
+    content()
+
+  },[])
   return (
     <div className=' mt-6 '>
     <div className='flex justify-between max-md:p-3'>
@@ -16,105 +34,25 @@ export default function container1() {
 
     </div>
     <div className='  flex overflow-x-auto  content1 border-b-2 pb-6 mt-3 max-md:pl-3 ' style={{maxWidth: "1100px"}}>
-    <div className=' mr-6 border'>
+      {data?data.map(Element =>(
+        <div className=' mr-6 '>
     <div className='image h-36 w-36 m-auto'>
-    <img src={dish} className=' h-full  w-full '/>
+    <img src={`data:${Element.type};base64,${Element.image}`} className=' h-full  w-full  rounded-s-full'/>
 
     </div>
     
-    <div className='mt-6 text-lg text-gray-600 font-bold flex justify-center border'>
-      Rice
+    <div className='mt-6 text-lg text-gray-600 font-bold flex justify-center '>
+     {Element.name}
     </div>
 
     </div>
-    <div className=' mr-6 border'>
-    <div className='image h-36 w-36 m-auto'>
-    <img src={dish} className=' h-full  w-full '/>
+   
 
-    </div>
-    
-    <div className='mt-6 text-lg text-gray-600 font-bold flex justify-center border'>
-      Rice
-    </div>
+      )):''}
+     
 
-    </div>
-    <div className=' mr-6 border'>
-    <div className='image h-36 w-36 m-auto'>
-    <img src={dish} className=' h-full  w-full '/>
-
-    </div>
-    
-    <div className='mt-6 text-lg text-gray-600 font-bold flex justify-center border'>
-      Rice
-    </div>
-
-    </div>
-    <div className=' mr-6 border'>
-    <div className='image h-36 w-36 m-auto'>
-    <img src={dish} className=' h-full  w-full '/>
-
-    </div>
-    
-    <div className='mt-6 text-lg text-gray-600 font-bold flex justify-center border'>
-      Rice
-    </div>
-
-    </div>
-    <div className=' mr-6 border'>
-    <div className='image h-36 w-36 m-auto'>
-    <img src={dish} className=' h-full  w-full '/>
-
-    </div>
-    
-    <div className='mt-6 text-lg text-gray-600 font-bold flex justify-center border'>
-      Rice
-    </div>
-
-    </div>
-    <div className=' mr-6 border'>
-    <div className='image h-36 w-36 m-auto'>
-    <img src={dish} className=' h-full  w-full '/>
-
-    </div>
-    
-    <div className='mt-6 text-lg text-gray-600 font-bold flex justify-center border'>
-      Rice
-    </div>
-
-    </div>
-    <div className=' mr-6 border'>
-    <div className='image h-36 w-36 m-auto'>
-    <img src={dish} className=' h-full  w-full '/>
-
-    </div>
-    
-    <div className='mt-6 text-lg text-gray-600 font-bold flex justify-center border'>
-      Rice
-    </div>
-
-    </div>
-    <div className=' mr-6 border'>
-    <div className='image h-36 w-36 m-auto'>
-    <img src={dish} className=' h-full  w-full '/>
-
-    </div>
-    
-    <div className='mt-6 text-lg text-gray-600 font-bold flex justify-center border'>
-      Rice
-    </div>
-
-    </div>
-    <div className=' mr-6 border'>
-    <div className='image h-36 w-36 m-auto'>
-    <img src={dish} className=' h-full  w-full '/>
-
-    </div>
-    
-    <div className='mt-6 text-lg text-gray-600 font-bold flex justify-center border'>
-      Rice
-    </div>
-
-    </div>
+  
+   
    
 
 

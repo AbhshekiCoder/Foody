@@ -26,6 +26,10 @@ let dish_Sechema = new mongoose.Schema({
     type:{
         type: String,
         require: true
+    },
+    price:{
+        type: String,
+        require: true
     }
 })
 

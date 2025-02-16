@@ -6,9 +6,9 @@ import dotenv from  'dotenv';
 dotenv.config();
 
 let user_login = async(req, res)=>{
-    console.log(process.env.JWT_SECRET)
+   
     let {email, password} = req.body;
-    console.log(email)
+   
     try{
        let user =  await user_modal.findOne({email: email});
        if(!user){
@@ -21,6 +21,8 @@ let user_login = async(req, res)=>{
          if(hash){
           
            let token =  jwt.sign({email: email}, process.env.JWT_SECRET, {expiresIn: "1hr"} );
+          
+          
            res.status(200).send({success: true, message: "login successfully", token: token});
           
 

@@ -25,6 +25,14 @@ let adminSchema =  new mongoose.Schema({
     },
     password:{
         type: String
+    },
+    address:{
+        type: String,
+        default: ""
+    },
+    type:{
+        type: String,
+        default: ""
     }
 
 

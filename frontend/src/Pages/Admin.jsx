@@ -1,8 +1,10 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import url from '../misc/url';
+import { useNavigate } from 'react-router-dom';
 export default function Admin() {
    let [file, setFile] = useState();
+   let navigate = useNavigate();
     useEffect(()=>{
         document.querySelector('.navbar').style.display = "none";
 
@@ -17,7 +19,9 @@ export default function Admin() {
       let form = document.forms['dish'];
       let name = form.name.value;
       let description = form.description.value;
+      let price = form.price.value;
       let email = localStorage.getItem('admin')
+      
       console.log(email)
 
       let formData = new FormData();
@@ -26,7 +30,9 @@ export default function Admin() {
       formData.append("description", description);
       formData.append("file", file);
       formData.append("email", email)
+      formData.append("price", price)
       formData.append("type", file.type)
+     
       
       let result = await axios.post(`${url}dish_fetch/dish_fetch`, formData )
       if(result.data.success){
@@ -49,7 +55,7 @@ export default function Admin() {
 
 
     </div>
-    <div className='font-bold p-3'>
+    <div className='font-bold p-3' onClick={()=>{ localStorage.removeItem("admin"), navigate('/') }}>
     Log out
 
     </div>
@@ -66,6 +72,10 @@ export default function Admin() {
     <div className='mt-3'>
       <span>description</span>
       <textarea name='description' className='border w-full h-9' rows={10}></textarea>
+    </div>
+    <div className='mt-3'>
+      <span>price</span>
+      <input type='Number' name='price' className='border w-full h-9'/>
     </div>
     <div className='mt-3'>
       <span>Dish image</span>

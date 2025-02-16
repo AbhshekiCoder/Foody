@@ -17,6 +17,12 @@ import Admin from './Pages/Admin';
 import Search from './Pages/Search';
 import Restaurant from './Pages/Restaurant';
 
+import user from './misc/user';
+import DashBoard from './Pages/DashBoard';
+import { useDispatch } from 'react-redux';
+import { locationinfo } from './feature/location';
+import { userinfo } from './feature/userinfo';
+import Cart from './Pages/Cart';
 
 function App() {
   
@@ -26,9 +32,11 @@ function App() {
    }
    let [type, setType] = useState("success");
    let [profile, setProfile] = useState(false);
+   let dispatch = useDispatch();
  
 
    let  signin = async (e)=>{
+    console.log("hello")
        e.preventDefault();
        let form = document.forms['login'];
      
@@ -56,12 +64,26 @@ function App() {
          setType("success")
          document.getElementById("message").innerText = result.data.message;
          document.querySelector('.message').style.display = "block";
-         localStorage.setItem("token", result.data.token)
+         localStorage.setItem("token", result.data.token);
+         
+          let token = localStorage.getItem('token');
+          try{
+           let result = await axios.post(`${url}user/user`, {token} );
+           dispatch(userinfo(result.data))
+           
+           dispatch(locationinfo(result.data.address))
+         
+           
+          }catch(err){
+           console.log(err.message)
+          }
+         
          setTimeout(()=>{
            document.querySelector('.message').style.display = "none";
  
          },2000)
          setProfile(true)
+         
        }
  
  
@@ -72,8 +94,9 @@ function App() {
     setProfile(false);
    }
    useEffect(()=>{
-    let user = localStorage.getItem("token");
-    if(user){
+   
+    let token = localStorage.getItem("token");
+    if(token){
       setProfile(true)
     }
 
@@ -93,6 +116,8 @@ function App() {
       <Route path = "/admin" element={<Admin/>}></Route>
       <Route path = "/Search" element={<Search/>}></Route>
       <Route path = "/restaurant" element={<Restaurant/>}></Route>
+      <Route path = "/dashboard" element = {<DashBoard/>}></Route>
+      <Route path = "/cart" element={<Cart/>}></Route>
     </Routes>
 
 

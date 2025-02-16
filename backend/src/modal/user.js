@@ -16,7 +16,12 @@ let register_Schema = new mongoose.Schema({
     password:{
         type: String,
         require: true
+    },
+    address:{
+        type: String,
+        default: ''
     }
+    
 })
 
 let user_modal = mongoose.model('User', register_Schema)

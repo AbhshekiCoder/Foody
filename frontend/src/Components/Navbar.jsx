@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import logo from '../assets/logo.png';
 import Sidebar from './Sidebar';
 import {useSelector} from 'react-redux'
@@ -8,12 +8,31 @@ import url from '../misc/url';
 import { useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import Location from '../misc/Location';
+import { locationinfo } from '../feature/location';
 export default function Navbar({login, profile, logout}) {
+
   let dispatch = useDispatch()
+  
+  let cart = useSelector((state) => state.cart.value)
   let name = useSelector((state) => state.name.value);
-  let array = name.split(' ');
-  let username = Array.from(array[0])
-  console.log(profile)
+  let token = localStorage.getItem('token');
+  let username  = '';
+  if(token){
+   
+ let array = name?name.name.split(" "):'hii hello';
+
+   username = array[0]
+  
+
+  }
+  
+    
+
+  
+ console.log(name)
+  
+  let location = useSelector((state) => state.location.value);
   let num = 1;
   function sidebar(){
     num++;
@@ -25,23 +44,7 @@ export default function Navbar({login, profile, logout}) {
 
     }
   }
-  useEffect(()=>{
-    user();
-   
-    
-
-   })
-   let user = async()=>{
-    
-    let token = localStorage.getItem('token');
-    try{
-     let result = await axios.post(`${url}user/user`, {token} );
-     dispatch(userinfo(result.data))
-     
-    }catch(err){
-     console.log(err.message)
-    }
-   }
+  
    
    function profile_open(){
    
@@ -49,6 +52,29 @@ export default function Navbar({login, profile, logout}) {
   
     
    }
+   let user = async() =>{
+    try{
+      let token = localStorage.getItem('token');
+      let result = await axios.post(`${url}user/user`, {token} );
+      console.log(result.data)
+      dispatch(userinfo(result.data))
+      
+      dispatch(locationinfo(result.data.address))
+    
+      
+     }catch(err){
+      console.log(err.message)
+     }
+   }
+   useEffect(() =>{
+    user()
+    console.log(name)
+    
+     
+
+    
+
+   },[])
 
   return (
     <> 
@@ -59,12 +85,14 @@ export default function Navbar({login, profile, logout}) {
     <Link to ="/"><img src = {logo} className=' h-10 w-10'/> </Link> 
 
     </div>
-    <div className='address text-lg font-semibold text-gray-400 max-lg:hidden'>
-    Bhagya Laxmi Colony ...
-
+    <div className='address text-lg font-semibold text-gray-400 max-lg:hidden' onClick={() =>{
+      document.querySelector('.location').style.display = "block"
+      console.log("hello")
+    }}>
+     {location.substr(0, 30) + '...'}
     </div>
     <div className='flex h-full items-center  max-lg:hidden'>
-    <i class="fa-solid fa-bag-shopping mr-3 text-gray-600 "></i><a className=' text-gray-500 font-semibold hover:text-orange-600'>Diggy Corporate</a>
+    <i class="fa-solid fa-bag-shopping mr-3 text-gray-600 "></i><Link to = '/' className=' text-gray-500 font-semibold hover:text-orange-600'>Diggy Corporate</Link>
 
     </div>
     <div className='search flex h-full items-center  max-lg:hidden'>
@@ -72,19 +100,20 @@ export default function Navbar({login, profile, logout}) {
 
     </div>
     <div className='flex h-full items-center  max-lg:hidden'>
-    <i class="fa-solid fa-gift mr-3 text-gray-600"></i><span className=' text-gray-500 font-semibold  hover:text-orange-600'>Offer</span>
+    <i class="fa-solid fa-gift mr-3 text-gray-600"></i><span className=' text-gray-500 font-semibold  hover:text-orange-600'><Link to = "/" className=' hover:text-orange-600  text-gray-500 '> Offer</Link></span>
 
     </div>
     <div className='flex h-full items-center  max-lg:hidden'>
-    <i class="fa-solid fa-circle-info mr-3 text-gray-600"></i><span className=' text-gray-500 font-semibold  hover:text-orange-600'>Help</span>
+    <i class="fa-solid fa-circle-info mr-3 text-gray-600"></i><span className=' text-gray-500 font-semibold  hover:text-orange-600'><Link to = "/"  className=' hover:text-orange-600  text-gray-500 '> Help</Link></span>
 
     </div>
     <div className='flex h-full items-center  max-lg:hidden'>
-    {profile?<div className='flex items-center'><div className='rounded-circle flex justify-center items-center border h-9 w-9 mr-3 font-bold'  onMouseOver={profile_open}>{username[0]}</div><span className=' text-gray-500 font-semibold  hover:text-orange-600' >{array[0]}</span></div>:<span className=' text-gray-500 font-semibold  hover:text-orange-600' onClick={login}>Login</span>}
+    {profile?<div className='flex items-center'><div className='rounded-circle flex justify-center items-center border h-9 w-9 mr-3 font-bold'  onMouseOver={profile_open}>{username?username[0]:''}</div><span className=' text-gray-500 font-semibold  hover:text-orange-600' >{username}</span></div>:<span className=' text-gray-500 font-semibold  hover:text-orange-600' onClick={login}>Login</span>}
 
     </div>
     <div className='flex h-full items-center  max-lg:hidden'>
-    <i class="fa-solid fa-cart-shopping mr-3 text-gray-600"></i><span className=' text-gray-500 font-semibold  hover:text-orange-600'>Cart</span>
+    <p>{cart}</p>
+    <i class="fa-solid fa-cart-shopping mr-3 text-gray-600"></i><span className=' text-gray-500 font-semibold  hover:text-orange-600'><Link to = "/cart" className=' hover:text-orange-600  text-gray-500'>Cart</Link></span>
 
     </div>
     <div className='hidden h-full items-center max-lg:flex mr-3' onClick={sidebar}>
@@ -98,6 +127,7 @@ export default function Navbar({login, profile, logout}) {
     </div>
       
     </div>
+     <Location/>
     <Sidebar/>
     </>
   )

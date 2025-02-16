@@ -1,6 +1,7 @@
 import React from 'react'
 import dish1 from '../../assets/dish1.png'
 export default function ContentList() {
+   
   return (
     <div className=' mt-9 pb-6 '>
     <div className=' '>

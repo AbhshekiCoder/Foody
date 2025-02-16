@@ -14,7 +14,7 @@ let user_name = async(req, res)=>{
         console.log(email)
         let result = await user_modal.findOne({email: email.email});
         if(result){
-            res.status(200).send(result.name)
+            res.status(200).send(result)
         }
       
     }catch(err){
