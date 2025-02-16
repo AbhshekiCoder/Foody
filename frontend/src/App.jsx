@@ -8,7 +8,7 @@ import './CSS/Common.css';
 import Signup from './Pages/Singnup';
 import Login from './Components/Login';
 import 'rsuite/dist/rsuite.min.css';
-import url from './misc/url';
+import url from './misc/url.js';
 import axios from 'axios';
 import { Message } from 'rsuite';
 import Profile from './Components/Profile';
