@@ -10,6 +10,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import Location from '../misc/Location';
 import { locationinfo } from '../feature/location';
+
 export default function Navbar({login, profile, logout}) {
 
   let dispatch = useDispatch()
@@ -82,7 +83,7 @@ export default function Navbar({login, profile, logout}) {
     <div className='   m-auto'>
     <div className='flex h-full items-center justify-between'>
     <div className='logo max-lg:pl-3'>
-    <Link to ="/"><img src = {logo} className=' h-10 w-10'/> </Link> 
+    <Link to ="/"><img src = {logo} className=' h-10 w-32'/> </Link> 
 
     </div>
     <div className='address text-lg font-semibold text-gray-400 max-lg:hidden' onClick={() =>{
@@ -112,7 +113,7 @@ export default function Navbar({login, profile, logout}) {
 
     </div>
     <div className='flex h-full items-center  max-lg:hidden'>
-    <p>{cart}</p>
+    <p>{localStorage.getItem("token")?cart:''}</p>
     <i class="fa-solid fa-cart-shopping mr-3 text-gray-600"></i><span className=' text-gray-500 font-semibold  hover:text-orange-600'><Link to = "/cart" className=' hover:text-orange-600  text-gray-500'>Cart</Link></span>
 
     </div>

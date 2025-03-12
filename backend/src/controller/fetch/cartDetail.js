@@ -7,11 +7,14 @@ import admin from '../../modal/admin.js';
 let cart_detail = async(req ,res ) =>{
     let {token} = req.params;
     let email = jwt.decode(token)
+    try{
+
     
-    let result = await dishModel.find({user_id: email.email});
+    let result = await dishModel.findOne({user_id: email.email});
     
-    if(result.length > 0){
-        let result1 = await admin.findOne({_id: result[0].restaurant});
+    if(result){
+        let result1 = await admin.findOne({restaurant_name: result.restaurant   });
+       
         let result2 =  await dishModel.aggregate([
             {$match:{user_id: email.email}},
             {
@@ -23,8 +26,9 @@ let cart_detail = async(req ,res ) =>{
             }
 
     ])
+
     let total  = result2[0].total * result2[0].count;
-        console.log(result2)
+       
         if(result.length > 0){
             res.send({success: true,  dish: result, restaurant: result1, total: total })
         }
@@ -33,6 +37,9 @@ let cart_detail = async(req ,res ) =>{
         }
 
     }
+}catch(err){
+    console.log(err.message)
+}
    
 }
 export default cart_detail;

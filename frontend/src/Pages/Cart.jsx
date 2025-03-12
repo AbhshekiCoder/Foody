@@ -26,7 +26,7 @@ export default function Cart() {
             setRestaurant(result.data.restaurant)
             setTotal(result.data.total)
             console.log(result.data.restaurant)
-            
+        
         }
 
     }

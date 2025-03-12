@@ -21,9 +21,11 @@ let Carts = async(req, res) =>{
             res.send({success: false})
             return;
         }
-        let result = await dishModel.findOne({$and:[{user_id: email.email}, {dish_id: dish_id}]})
+        let result = await dishModel.findOne( {restaurant:  restaurant})
         if(!result){
-            
+          
+
+            let result  = await dishModel.deleteMany({user_id: email.email})
             let result1 = await cart.save();
          
             if(result1){
@@ -31,16 +33,21 @@ let Carts = async(req, res) =>{
             }
         }
         else{
-            let result = await dishModel.updateOne({user_id: email.email, dish_id: dish_id}, {$set:{count: count}})
-            if(result){
-                let result2 = await dishModel.findOne({$and:[{user_id: email.email}, {dish_id: dish_id}]});
-                if(result2){
-                    console.log(result2)
-                    res.send({success: true, data: result2})
-
+            
+                let result = await dishModel.updateOne({user_id: email.email, dish_id: dish_id}, {$set:{count: count}})
+                if(result){
+                    let result2 = await dishModel.findOne({$and:[{user_id: email.email}, {dish_id: dish_id}]});
+                    if(result2){
+                        console.log(result2)
+                        res.send({success: true, data: result2})
+    
+                    }
+                    
                 }
-                
-            }
+
+            
+           
+           
         }
     }catch(err){
         console.log(err.message)
