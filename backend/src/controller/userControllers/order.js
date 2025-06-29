@@ -1,5 +1,5 @@
 import express from 'express';
-import orderModel from '../../modal/Order.js';
+import orderModel from '../../modal/order.js';
 import razorpay from 'razorpay'
 
 
