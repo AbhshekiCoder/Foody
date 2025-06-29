@@ -28,9 +28,6 @@ let Carts = async(req, res) =>{
             let result  = await dishModel.deleteMany({user_id: email.email})
             let result1 = await cart.save();
          
-            if(result1){
-                res.send({success: true, data: result1});
-            }
         }
         else{
             
@@ -44,6 +41,7 @@ let Carts = async(req, res) =>{
                     }
                     
                 }
+                
 
             
            
