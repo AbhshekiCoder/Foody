@@ -1,3 +1,3 @@
-let url = "https://foody-1slo.onrender.com/";
+let url = "http://localhost:5000/";
 
 export default url;

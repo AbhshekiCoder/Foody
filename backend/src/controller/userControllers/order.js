@@ -1,6 +1,7 @@
 import express from 'express';
 import orderModel from '../../modal/order.js';
 import razorpay from 'razorpay'
+import dishModel from '../../modal/cart.js';
 
 
 const razorpayInstance = new razorpay({
@@ -9,7 +10,7 @@ const razorpayInstance = new razorpay({
   });
   
 let Order  = async(req, res) =>{
-    let {name, email, phone, address, price, username, status, restaurant} = req.body;
+    let {name, email, phone, address, price, username, dish, restaurant} = req.body;
     console.log(name)
     try{
         const options = {
@@ -26,13 +27,16 @@ let Order  = async(req, res) =>{
                 restaurant: restaurant,
                 address: address,
                 user:{username: username, email: email, phone: phone},
-                price: price
+                price: price,
+                dishes: dish
         
             })
         
             let result = obj.save();
             if(result){
-                res.send({success: true,  data: order})
+                res.send({success: true,  data: order});
+                let result = await dishModel.deleteMany({$and:[{user_id: email}, {restaurant: restaurant}]})
+                
             }
             else{
                 res.send({success: false, message: "Something Went Wrong"})

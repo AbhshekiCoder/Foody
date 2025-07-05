@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 export default function Profile({logout}) {
   return (
-    <div className='profile h-fit max-w-60 bg-white modal p-3 ' style={{marginTop: "70px", marginLeft: "70%"}} onMouseLeave={()=>{document.querySelector('.profile').style.display = "none"}}>
+    <div className='profile h-fit max-w-60 bg-white modal p-3 shadow-md ' style={{marginTop: "70px", marginLeft: "70%"}} onMouseLeave={()=>{document.querySelector('.profile').style.display = "none"}}>
     <div className='p-3  text-gray-400'>
     <Link to = "/dashboard" className='text-black text-md font-semibold   hover:no-underline hover:text-lg'>Profile</Link>
 

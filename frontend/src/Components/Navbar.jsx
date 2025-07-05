@@ -83,7 +83,7 @@ export default function Navbar({login, profile, logout}) {
     <div className='   m-auto'>
     <div className='flex h-full items-center justify-between'>
     <div className='logo max-lg:pl-3'>
-    <Link to ="/"><img src = {logo} className=' h-10 w-32'/> </Link> 
+    <Link to ="/"><img src = {logo} className=' h-10 w-32 hover:h-11 '/> </Link> 
 
     </div>
     <div className='address text-lg font-semibold text-gray-400 max-lg:hidden' onClick={() =>{
@@ -92,29 +92,29 @@ export default function Navbar({login, profile, logout}) {
     }}>
      {location.substr(0, 30) + '...'}
     </div>
-    <div className='flex h-full items-center  max-lg:hidden'>
-    <i class="fa-solid fa-bag-shopping mr-3 text-gray-600 "></i><Link to = '/' className=' text-gray-500 font-semibold hover:text-orange-600'>Diggy Corporate</Link>
+    <div className='flex h-full items-center  max-lg:hidden no-underline'>
+    <i class="fa-solid fa-bag-shopping mr-3 text-gray-600 "></i><Link to = '/corporate' className=' text-gray-500 font-semibold hover:text-orange-600  hover:no-underline  '>Diggy Corporate</Link>
 
     </div>
     <div className='search flex h-full items-center  max-lg:hidden'>
-    <i class="fa-solid fa-magnifying-glass mr-3 text-orange-600"></i> <p className=' text-orange-600 font-bold search_item' ><Link to = "/Search" className=' text-orange-600 font-bold'>Search</Link></p>
+    <i class="fa-solid fa-magnifying-glass mr-3 text-orange-600"></i> <p className=' text-orange-600 font-bold search_item' ><Link to = "/Search" className=' text-orange-600 font-bold hover:no-underline' >Search</Link></p>
 
     </div>
     <div className='flex h-full items-center  max-lg:hidden'>
-    <i class="fa-solid fa-gift mr-3 text-gray-600"></i><span className=' text-gray-500 font-semibold  hover:text-orange-600'><Link to = "/" className=' hover:text-orange-600  text-gray-500 '> Offer</Link></span>
+    <i class="fa-solid fa-gift mr-3 text-gray-600"></i><span className=' text-gray-500 font-semibold  hover:text-orange-600'><Link to = "/offers" className=' hover:text-orange-600  text-gray-500 hover:no-underline '> Offer</Link></span>
 
     </div>
     <div className='flex h-full items-center  max-lg:hidden'>
-    <i class="fa-solid fa-circle-info mr-3 text-gray-600"></i><span className=' text-gray-500 font-semibold  hover:text-orange-600'><Link to = "/"  className=' hover:text-orange-600  text-gray-500 '> Help</Link></span>
+    <i class="fa-solid fa-circle-info mr-3 text-gray-600"></i><span className=' text-gray-500 font-semibold  hover:text-orange-600'><Link to = "/help"  className=' hover:text-orange-600  text-gray-500 hover:no-underline '> Help</Link></span>
 
     </div>
     <div className='flex h-full items-center  max-lg:hidden'>
-    {profile?<div className='flex items-center'><div className='rounded-circle flex justify-center items-center border h-9 w-9 mr-3 font-bold'  onMouseOver={profile_open}>{username?username[0]:''}</div><span className=' text-gray-500 font-semibold  hover:text-orange-600' >{username}</span></div>:<span className=' text-gray-500 font-semibold  hover:text-orange-600' onClick={login}>Login</span>}
+    {profile?<div className='flex items-center'><div className='rounded-circle flex justify-center items-center border h-9 w-9 mr-3 font-bold hover:cursor-pointer'  onMouseOver={profile_open}>{username?username[0]:''}</div><span className=' text-gray-500 font-semibold  hover:text-orange-600' >{username}</span></div>:<span className=' text-gray-500 font-semibold  hover:text-orange-600' onClick={login}>Login</span>}
 
     </div>
     <div className='flex h-full items-center  max-lg:hidden'>
     <p>{localStorage.getItem("token")?cart:''}</p>
-    <i class="fa-solid fa-cart-shopping mr-3 text-gray-600"></i><span className=' text-gray-500 font-semibold  hover:text-orange-600'><Link to = "/cart" className=' hover:text-orange-600  text-gray-500'>Cart</Link></span>
+    <i class="fa-solid fa-cart-shopping mr-3 text-gray-600"></i><span className=' text-gray-500 font-semibold  hover:text-orange-600'><Link to = "/cart" className=' hover:text-orange-600  text-gray-500 hover:no-underline '>Cart</Link></span>
 
     </div>
     <div className='hidden h-full items-center max-lg:flex mr-3' onClick={sidebar}>
@@ -129,7 +129,7 @@ export default function Navbar({login, profile, logout}) {
       
     </div>
      <Location/>
-    <Sidebar/>
+    <Sidebar logout={logout} login={login}/>
     </>
   )
 }

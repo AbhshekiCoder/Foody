@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 let Carts = async(req, res) =>{
     let {name, restaurant, dish_id, token, count, price } = req.body;
     let email = jwt.decode(token);
-    console.log(price)
+    console.log(name,email)
   
     try{
         let cart = new dishModel({
@@ -21,32 +21,31 @@ let Carts = async(req, res) =>{
             res.send({success: false})
             return;
         }
-        let result = await dishModel.findOne( {restaurant:  restaurant})
-        if(!result){
-          
+        //✅ Check if the user has a cart item for this restaurant
+let existingDish = await dishModel.findOne({ user_id: email.email, restaurant: restaurant });
 
-            let result  = await dishModel.deleteMany({user_id: email.email})
-            let result1 = await cart.save();
-         
-        }
-        else{
-            
-                let result = await dishModel.updateOne({user_id: email.email, dish_id: dish_id}, {$set:{count: count}})
-                if(result){
-                    let result2 = await dishModel.findOne({$and:[{user_id: email.email}, {dish_id: dish_id}]});
-                    if(result2){
-                        console.log(result2)
-                        res.send({success: true, data: result2})
-    
-                    }
-                    
-                }
-                
+if (!existingDish) {
+  // 🔄 New restaurant: delete all old dishes from other restaurant
+  await dishModel.deleteMany({ user_id: email.email });
 
-            
-           
-           
-        }
+  // Save the new dish
+  await cart.save();
+  res.send({ success: true, data: cart });
+} else {
+  // ✅ Restaurant already in cart: update or insert
+  let updated = await dishModel.updateOne(
+    { user_id: email.email, dish_id: dish_id  },
+    { $set: { count: count, name: name, restaurant, price } },
+    { upsert: true }
+  );
+
+  let result2 = await dishModel.findOne({ user_id: email.email, dish_id: dish_id });
+  if (result2) {
+    res.send({ success: true, data: result2 });
+  } else {
+    res.send({ success: false });
+  }
+}
     }catch(err){
         console.log(err.message)
     }

@@ -16,15 +16,21 @@ import Singnin from './Pages/Singnin';
 import Admin from './Pages/Admin';
 import Search from './Pages/Search';
 import Restaurant from './Pages/Restaurant';
+import Footer from './Components/Footer'
 
 
 import DashBoard from './Pages/DashBoard';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { locationinfo } from './feature/location';
 import { userinfo } from './feature/userinfo';
 import Cart from './Pages/Cart';
-
+import { dishData } from './feature/data.js';
+import Corporate from './Pages/Corporate.jsx';
+import Offers from './Pages/Offers.jsx';
+import Help from './Pages/Help.jsx';
+import 'react-loading-skeleton/dist/skeleton.css'
 function App() {
+  const name = useSelector(state => state.name.value)
   
    function login(){
     console.log("hello")
@@ -33,7 +39,17 @@ function App() {
    let [type, setType] = useState("success");
    let [profile, setProfile] = useState(false);
    let dispatch = useDispatch();
- 
+     let content = async() =>{
+               let result = await axios.post(`${url}dishes/dishes`);
+               if(result.data){
+                
+                 dispatch(dishData(result.data))
+               }
+               else{
+                 console.log("something went wrong")
+               }
+       
+             }
 
    let  signin = async (e)=>{
     console.log("hello")
@@ -72,7 +88,7 @@ function App() {
            dispatch(userinfo(result.data))
            
            dispatch(locationinfo(result.data.address))
-         
+           content()
            
           }catch(err){
            console.log(err.message)
@@ -92,6 +108,7 @@ function App() {
    function logout(){
     localStorage.removeItem("token");
     setProfile(false);
+    
    }
    useEffect(()=>{
    
@@ -99,19 +116,24 @@ function App() {
     if(token){
       setProfile(true)
     }
-   
+    setTimeout(() =>{
+       content()
      
+
+    },2000)
+  
   
 
-   },[])
+   },[name])
   
   return (
     <>
-  
+   
     <Profile  logout={logout}/>
     <Navbar login={login} profile={profile} />
     <Login signin={signin} type={type}
     />
+    
     <Routes>
       <Route path='/' element={<Home/>}></Route>
       <Route path = "/signup" element={<Signup/>}></Route>
@@ -121,11 +143,13 @@ function App() {
       <Route path = "/restaurant" element={<Restaurant/>}></Route>
       <Route path = "/dashboard" element = {<DashBoard/>}></Route>
       <Route path = "/cart" element={<Cart/>}></Route>
+      <Route path = "/corporate" element={<Corporate/>}></Route>
+      <Route path = "/offers" element={<Offers/>}></Route>
+      <Route path="/help" element={<Help/>}></Route>
     </Routes>
-
-
-
-   
+    
+    <Footer/>
+       
       
    
       

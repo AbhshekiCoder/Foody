@@ -10,8 +10,7 @@ import admin from '../../modal/admin.js';
 let search = async(req, res) =>{
     let {input} = req.body;
     let data = input.toUpperCase();
-    console.log(data)
-    
+ 
    let result = await dish_Model.find();
    let array1 = [];
    if(result.length > 0){

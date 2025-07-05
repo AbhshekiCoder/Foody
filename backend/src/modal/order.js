@@ -31,7 +31,13 @@ let orderSchema = new mongoose.Schema({
     },
     price:{
         type: String
+    },
+    dishes:{
+        type: Array
+        
+
     }
+    
 
 })
 

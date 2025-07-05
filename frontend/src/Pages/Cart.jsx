@@ -1,11 +1,13 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import url from '../misc/url.js'
-
+import { FaRupeeSign } from 'react-icons/fa'
+import { dishCount } from '../feature/cart.js'
 export default function Cart() {
     let address = useSelector((state) => state.location.value);
     let user = useSelector((state) => state.name.value);
+    const dispatch = useDispatch()
 
 
     let [data, setData] = useState();
@@ -19,15 +21,22 @@ export default function Cart() {
         e.target.style.display = "none";
     }
     let dish = async() =>{
+        console.log("hrllo")
         let token = localStorage.getItem("token");
+        console.log(token)
+        try{
         let result = await axios.get(`${url}cartDetail/${token}/cartDetail/${token}`);
+      
         if(result.data.success){
             setData(result.data.dish)
             setRestaurant(result.data.restaurant)
+            
             setTotal(result.data.total)
-            console.log(result.data.restaurant)
-        
+            console.log(result.data.dish)       
         }
+    }catch(err){
+        console.log(err.message)
+    }
 
     }
     useEffect(() =>{
@@ -36,20 +45,16 @@ export default function Cart() {
     },[])
 
     let payment = async() =>{
-        let array = [];
-        for(let i = 0; i< data.length; i++){
-            array.push(data[i].name)
-
-        }
+      
 
         let obj = {
-            name: array,
+            dish: data,
             username: user.name,
             email: user.email,
             address: user.address,
             phone: user.phone,
             price: total,
-            restaurant: restaurant._id
+            restaurant: restaurant
 
 
         }
@@ -59,20 +64,35 @@ export default function Cart() {
 			key: "rzp_test_pEZdDpwnJejkWR", // Add your Razorpay Key ID
 			amount: result.data.data.amount * 100, // Amount in paise
 			currency:'INR',
-			name: "Your Company Name",
+			name: "Foody",
 			description: "Test Transaction",
 			order_id: result.data.data.id,
 			handler: function (response) {
-			 alert(`Payment ID: ${response.razorpay_payment_id}`);
+               alert("order is created")
+               data.forEach(Element =>{
+                localStorage.removeItem(Element.dish_id);
+                
+
+               })
+               localStorage.setItem("count", 0);
+               dispatch(dishCount(0))
+
+               setData("");
+               setRestaurant("")
+               setTotal("");
+               document.getElementById('wallet-icon').style.backgroundColor = "black";
+        document.querySelector('.payment-text').style.display = "block";
+        document.querySelector('.payment-btn').style.display = "none";
+              
 			},
 			prefill: {
-			  name: "John Doe",
-			  email: "john.doe@example.com",
-			  contact: "9999999999",
+			  name: user.name,
+			  email: user.email,
+			  contact: user.phone,
 			},
 			theme: {
 			  color: "#3399cc",
-			},
+			},                                                                                             
 		  };
         const rzp =  new window.Razorpay(options)
 		rzp.open();
@@ -115,7 +135,7 @@ export default function Cart() {
     </div>
     <div className='p-3 payment-btn hidden'>
     <div className='text-lg font-bold'>Choose Payment Method</div>
-    <button className='text-lg font-bold h-10 text-white bg-green-600 mt-6 w-full' style={{backgroundColor: "rgb(27,166,114)"}} onClick = {payment}>
+    <button className='text-lg font-bold h-10 text-white bg-green-600 mt-6 w-full' style={{backgroundColor: "rgb(27,166,114)"}} onClick = {payment} disabled={data?false:true} >
         Proceed to Pay
     </button>
 
@@ -147,68 +167,58 @@ export default function Cart() {
     <div  className = ' overflow-y-auto  overflow-visible border-black border-b-2' style={{height: "400px", overflowY: "auto"}}>
     {data?data.map(Element =>(<div className='mt-3' >
     <div className='flex justify-between items-center'>
-    <div className='text-lg'>
+    <div className='text-md text-gray-500 font-bold'>
     {Element.name}
     </div>
     <div>
-    <i class="fa-solid fa-indian-rupee-sign mr-3"></i>{Element.price}
+        Qty:{Element.count}
+    </div>
+    <div>
+    <i class="fa-solid fa-indian-rupee-sign mr-3"></i>{Element.price * Element.count}
     </div>
    
     </div>
-    <div className='mt-6 p-2 flex justify-center' style={{backgroundColor: "rgb(250,250,250)"}}>
+   
+
+    </div>)):''}
+     <div className='mt-6 p-2 flex justify-center' style={{backgroundColor: "rgb(250,250,250)"}}>
     <i class="fa-solid fa-quote-left mr-3"></i>Any Suggestion We will pass it on...
 
     </div>
     
-
-    </div>)):''}
     <button className='h-10  border-2 border-dotted border-black w-full mt-6 '>
         Apply Coupon
     </button>
-    <div className='border-b-2 pb-3 mt-6'>
-    <div className='text-sm font-bold'>Bill Details</div>
+    <div className='border-b-2 border-dotted pb-3 mt-6'>
+    <div className='text-sm font-bold '>Bill Details</div>
     <div className='mt-3 flex justify-between'>
         <div>item total</div>
-        <div>100</div>
+        <div className='flex items-center'>  <FaRupeeSign className=' ' /> {total}</div>
     </div>
     <div className='mt-3 flex justify-between'>
         <div>Deliver Fee</div>
-        <div>20</div>
+        <div className='flex items-center'><FaRupeeSign/>20</div>
     </div>
-    <div className='mt-3 flex justify-between'>
-        <div>Extra discount for you</div>
-        <div>-20</div>
-    </div>
-    <div className='mt-3 flex justify-between'>
-        <div>item total</div>
-        <div>100</div>
-    </div>
+    
 
     </div>
-    <div className='border-b-2 pb-3 mt-6'>
-    <div className='text-sm font-bold'>Bill Details</div>
-    <div className='mt-3 flex justify-between'>
-        <div>item total</div>
-        <div>100</div>
-    </div>
-    <div className='mt-3 flex justify-between'>
-        <div>Deliver Fee</div>
-        <div>20</div>
-    </div>
+    <div className='border-b-2  pb-3 mt-6'>
+    
+  
     <div className='mt-3 flex justify-between'>
         <div>Extra discount for you</div>
-        <div>-20</div>
+        <div>  <i class="fa-solid fa-indian-rupee-sign mr-3"></i>-20</div>
     </div>
     <div className='mt-3 flex justify-between'>
-        <div>item total</div>
-        <div>100</div>
+        <div>GST & Other charges</div>
+        <div>  <i class="fa-solid fa-indian-rupee-sign mr-3"></i>34</div>
     </div>
 
     </div>
     </div>
     <div className='flex justify-between font-bold mt-3' >
     <div>Total Pay</div>
-    <div><i class="fa-solid fa-indian-rupee-sign mr-3"></i>{total}</div>
+    <div><i class="fa-solid fa-indian-rupee-sign mr-3"></i>{total + 20 + 34}</div>
 
     </div>
 

@@ -5,12 +5,16 @@ import { useEffect } from 'react'
 import { defaultClassPrefix } from 'rsuite/esm/internals/utils'
 import axios from 'axios'
 import url from '../misc/url.js'
+
 export default function Singnin() {
     let navigate = useNavigate();
     useEffect(() =>{
         document.querySelector('.navbar').style.display = "none"
+        
 
     },[])
+   
+          
     function signin(e){
         e.preventDefault();
         let form = document.forms['signin'];
@@ -25,7 +29,7 @@ export default function Singnin() {
                 alert(result.data.message)
                 localStorage.setItem("admin", email)
                 navigate('/Admin')
-
+               
             }
             else{
                 alert(result.data.message)
