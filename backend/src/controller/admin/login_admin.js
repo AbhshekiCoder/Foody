@@ -8,7 +8,7 @@ let login_admin = async(req, res)=>{
     try{
         let result = await admin_modal.findOne({$and:[{email: email, password: password}]});
         if(result){
-            res.send({success: true, message: "login successfully", email: email})
+            res.send({success: true, message: "login successfully", id: result._id})
         }
         else{
             res.send({success: false, message: "invalid email or password"});

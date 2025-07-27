@@ -36,6 +36,11 @@ let orderSchema = new mongoose.Schema({
         type: Array
         
 
+    },
+    createAt:{
+        type: Date,
+        default: Date.now()
+
     }
     
 

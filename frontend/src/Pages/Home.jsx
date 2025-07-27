@@ -5,6 +5,7 @@ import Content2 from './home/Content2'
 import ContentList from './home/ContentList'
 import Location from '../misc/Location'
 import { useNavigate } from 'react-router-dom'
+import Footer from '../Components/Footer'
 export default function Home() {
   const Navigate = useNavigate();
   return (
@@ -16,8 +17,10 @@ export default function Home() {
     <SliderContainer/>
     <Content2/>
     <ContentList/>
+    
    
   </div>
+  <Footer/>
   
   </>
   )

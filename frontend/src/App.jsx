@@ -29,6 +29,7 @@ import Corporate from './Pages/Corporate.jsx';
 import Offers from './Pages/Offers.jsx';
 import Help from './Pages/Help.jsx';
 import 'react-loading-skeleton/dist/skeleton.css'
+import Order from './Pages/Order.jsx';
 function App() {
   const name = useSelector(state => state.name.value)
   
@@ -78,9 +79,11 @@ function App() {
        else{
         
          setType("success")
+         document.querySelector(".signin").style.display = "none";
          document.getElementById("message").innerText = result.data.message;
          document.querySelector('.message').style.display = "block";
          localStorage.setItem("token", result.data.token);
+
          
           let token = localStorage.getItem('token');
           try{
@@ -146,9 +149,10 @@ function App() {
       <Route path = "/corporate" element={<Corporate/>}></Route>
       <Route path = "/offers" element={<Offers/>}></Route>
       <Route path="/help" element={<Help/>}></Route>
+      <Route path = "/order" element={<Order/>}></Route>
     </Routes>
     
-    <Footer/>
+ 
        
       
    

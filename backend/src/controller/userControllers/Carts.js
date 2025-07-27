@@ -2,53 +2,51 @@ import express from 'express';
 import dishModel from '../../modal/cart.js';
 import jwt from 'jsonwebtoken';
 
-let Carts = async(req, res) =>{
-    let {name, restaurant, dish_id, token, count, price } = req.body;
+let Carts = async (req, res) => {
+    let { name, restaurant, dish_id, token, count, price } = req.body;
     let email = jwt.decode(token);
-    console.log(name,email)
-  
-    try{
-        let cart = new dishModel({
-            name: name,
-            restaurant: restaurant,
-            dish_id: dish_id,
-            user_id: email.email,
-            count: 1,
-            price: price
-        });
-        if(count == 0){
-            let data = await dishModel.deleteOne({$and:[{user_id: email.email}, {dish_id: dish_id}]});
-            res.send({success: false})
-            return;
+
+    try {
+        if (count === 0) {
+            // ❌ Delete dish if quantity is 0
+            await dishModel.deleteOne({ user_id: email.email, dish_id });
+            return res.send({ success: true, message: "Dish removed" });
         }
-        //✅ Check if the user has a cart item for this restaurant
-let existingDish = await dishModel.findOne({ user_id: email.email, restaurant: restaurant });
 
-if (!existingDish) {
-  // 🔄 New restaurant: delete all old dishes from other restaurant
-  await dishModel.deleteMany({ user_id: email.email });
+        // ✅ Check if user already has dish from same restaurant
+        let existingDish = await dishModel.findOne({ user_id: email.email, restaurant });
 
-  // Save the new dish
-  await cart.save();
-  res.send({ success: true, data: cart });
-} else {
-  // ✅ Restaurant already in cart: update or insert
-  let updated = await dishModel.updateOne(
-    { user_id: email.email, dish_id: dish_id  },
-    { $set: { count: count, name: name, restaurant, price } },
-    { upsert: true }
-  );
+        if (!existingDish) {
+            // 🧹 New restaurant: clear previous dishes
+            await dishModel.deleteMany({ user_id: email.email });
 
-  let result2 = await dishModel.findOne({ user_id: email.email, dish_id: dish_id });
-  if (result2) {
-    res.send({ success: true, data: result2 });
-  } else {
-    res.send({ success: false });
-  }
-}
-    }catch(err){
-        console.log(err.message)
+            // ✅ Add new dish with correct count
+            let cart = new dishModel({
+                name,
+                restaurant,
+                dish_id,
+                user_id: email.email,
+                count, // ✅ FIXED HERE
+                price
+            });
+
+            await cart.save();
+            return res.send({ success: true, data: cart });
+        } else {
+            // 🔁 Update count for same restaurant dish
+            await dishModel.updateOne(
+                { user_id: email.email, dish_id },
+                { $set: { count, name, restaurant, price } },
+                { upsert: true }
+            );
+
+            let updated = await dishModel.findOne({ user_id: email.email, dish_id });
+            return res.send({ success: true, data: updated });
+        }
+    } catch (err) {
+        console.error(err.message);
+        return res.status(500).send({ success: false, message: "Server error" });
     }
+};
 
-}
 export default Carts;

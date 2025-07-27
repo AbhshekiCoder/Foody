@@ -23,6 +23,11 @@ import profileupdate from './routes/user/profileupdate.js';
 import cartDetail from './routes/fetch/cartDetail.js';
 import admin_profile_update from './routes/admin/admin_profile_update.js';
 import order from './routes/user/order.js';
+import order_fetch from './routes/fetch/order_fetch.js';
+import adminOrderRouter from './routes/fetch/adminOrderRouter.js';
+import adminRouter from './routes/fetch/adminRouter.js';
+import orderModel from './modal/order.js';
+import intrestedRoutes from './routes/user/intrested.js';
 
 
 let app = express();
@@ -52,8 +57,24 @@ app.use('/profileUpdated', profileupdate)
 app.use('/cartDetail/:token', cartDetail)
 app.use('/admin_profile_update', admin_profile_update)
 app.use('/order', order)
+app.use('/orderFetch/:token', order_fetch)
+app.use('/admin/order', adminOrderRouter)
+app.use('/admin/data', adminRouter)
+app.use('/interested', intrestedRoutes)
 
 
+app.put('/admin/orders/:id', async(req, res) =>{
+    const {id} = req.params;
+    const {status} = req.body;
+    try{
+    const result = await orderModel.findByIdAndUpdate(id, {$set:{status:status}});
+    if(result){
+        res.send({success: true,  message: "order updated "})
+    }
+}catch(err){
+    console.log(err.message)
+}
+} )
 app.get('/', (req, res)=>{
     res.send("hello")
 })

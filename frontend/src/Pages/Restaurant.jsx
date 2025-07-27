@@ -8,13 +8,23 @@ import { EffectCards } from 'swiper/modules';
 import { Loader } from 'rsuite';
 import { useDispatch, useSelector } from 'react-redux';
 import { dishCount } from '../feature/cart';
+import { FaHeart, FaRegHeart } from 'react-icons/fa';
 
 export default function Restaurant() {
   const [data, setData] = useState();
   const [dish, setDish] = useState();
   const [quantities, setQuantities] = useState({});
-  const cart = useSelector(state => state.cart.value);
   const dispatch = useDispatch();
+  const cart = useSelector(state => state.cart.value);
+  const [count, setCount] = useState(Number(localStorage.getItem('count')) || 0);
+  const [restaurantId, setRestaurantId] = useState(localStorage.getItem('id'));
+  const [isinterested, setisIntrested] = useState(false)
+
+  useEffect(() => {
+    restaurant();
+    dish_fetch();
+    setQuantities(getLocalQuantities());
+  }, []);
 
   const getLocalQuantities = () => {
     const stored = {};
@@ -26,47 +36,55 @@ export default function Restaurant() {
     return stored;
   };
 
-  useEffect(() => {
-    restaurant();
-    dish_fetch();
-    setQuantities(getLocalQuantities());
-  }, []);
-
   const restaurant = async () => {
-    let id = localStorage.getItem("id");
-    let result = await axios.get(`${url}restaurant/${id}/restaurant/${id}`);
+    let result = await axios.get(`${url}restaurant/${restaurantId}/restaurant/${restaurantId}`);
     if (result.data.success) {
       setData(result.data.data);
+      console.log(data)
     }
   };
 
   const dish_fetch = async () => {
-    let id = localStorage.getItem("id");
-    let result = await axios.get(`${url}dish/${id}/dish/${id}`);
+    let result = await axios.get(`${url}dish/${restaurantId}/dish/${restaurantId}`);
     if (result.data.success) {
       setDish(result.data.data);
     }
   };
 
   const dish_name = async (e) => {
-    let dish1 = e.target.value.toUpperCase();
-    let id = localStorage.getItem("id");
-    let result = await axios.get(`${url}dish/${id}/dish/${id}`);
+    let query = e.target.value.toUpperCase();
+    let result = await axios.get(`${url}dish/${restaurantId}/dish/${restaurantId}`);
     if (result.data.success) {
-      let result1 = result.data.data.filter(Element => Element.name.toUpperCase().includes(dish1));
-      setDish(result1);
+      let filtered = result.data.data.filter(d => d.name.toUpperCase().includes(query));
+      setDish(filtered);
     }
   };
 
-  const add = async (name, restaurant, dish_id, price) => {
+  const add = async (name, restaurant_name, dish_id, price) => {
     const token = localStorage.getItem('token');
     const prevQty = quantities[dish_id] || 0;
     const newQty = prevQty + 1;
-    const updatedCart = cart + 1;
+
+    const currentRestaurant = localStorage.getItem('restaurant_id');
+    const newRestaurant = restaurantId;
+
+    if (currentRestaurant && currentRestaurant !== newRestaurant) {
+      Object.keys(localStorage).forEach(key => {
+        if (!isNaN(localStorage.getItem(key))) {
+          localStorage.removeItem(key);
+        }
+      });
+      setQuantities({});
+      setCount(0);
+      dispatch(dishCount(0));
+      localStorage.setItem('count', '0');
+    }
+
+    localStorage.setItem('restaurant_id', newRestaurant);
 
     const obj = {
       name,
-      restaurant,
+      restaurant: restaurant_name,
       dish_id,
       token,
       count: newQty,
@@ -83,8 +101,7 @@ export default function Restaurant() {
     if (result.data.success) {
       localStorage.setItem(dish_id, newQty);
       setQuantities(prev => ({ ...prev, [dish_id]: newQty }));
-      dispatch(dishCount(updatedCart));
-      localStorage.setItem('count', updatedCart);
+      setCount(prev => prev + 1);
     }
   };
 
@@ -92,18 +109,11 @@ export default function Restaurant() {
     const token = localStorage.getItem('token');
     const prevQty = quantities[dish_id] || 0;
     const newQty = prevQty - 1;
-    const updatedCart = newQty > 0 ? cart - 1 : cart - prevQty;
-
-    if (newQty <= 0) {
-      localStorage.removeItem(dish_id);
-    } else {
-      localStorage.setItem(dish_id, newQty);
-    }
 
     const obj = {
       dish_id,
       token,
-      count: Math.max(newQty, 0),
+      count: Math.max(0, newQty),
       price
     };
 
@@ -115,20 +125,45 @@ export default function Restaurant() {
     });
 
     if (result.data.success) {
-      setQuantities(prev => {
-        const updated = { ...prev };
-        if (newQty <= 0) {
+      if (newQty > 0) {
+        localStorage.setItem(dish_id, newQty);
+        setQuantities(prev => ({ ...prev, [dish_id]: newQty }));
+      } else {
+        localStorage.removeItem(dish_id);
+        setQuantities(prev => {
+          const updated = { ...prev };
           delete updated[dish_id];
-        } else {
-          updated[dish_id] = newQty;
-        }
-        return { ...updated };
-      });
-
-      dispatch(dishCount(updatedCart));
-      localStorage.setItem('count', updatedCart);
+          return updated;
+        });
+      }
+      setCount(prev => prev - 1);
     }
   };
+
+  useEffect(() => {
+    dispatch(dishCount(count));
+    localStorage.setItem('count', count);
+  }, [count]);
+
+  let interested = async(id) =>{
+    const token = localStorage.getItem('token');
+  
+    const result = await axios.post(`${url}interested/interested`, {id: id, token: token},{
+      headers:{
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      }
+
+    })
+    if(result.data.success){
+      setisIntrested(true)
+    }
+    else{
+      setisIntrested(false)
+    }
+
+
+  }
 
   return (
     <>
@@ -148,8 +183,8 @@ export default function Restaurant() {
           <div className='p-3'>
             <div className='text-xl font-bold'>{data ? data.restaurant_name : ''}</div>
             <div className='rounded-md mt-6 shadow-lg p-3'>
-              <div className='font-bold'>
-                <i className="fa-solid fa-star rounded-circle p-1 bg-green-500 text-white mr-3"></i>3.11 rating
+              <div className='font-bold flex justify-between'>
+               <div> <i className="fa-solid fa-star rounded-circle p-1 bg-green-500 text-white mr-3"></i>3.11 rating</div><div>{isinterested?<FaHeart className='text-xl text-red-500' onClick={() => interested(data._id)} />:<FaRegHeart className='text-xl text-red-500' onClick={() => interested(data._id)} />}</div>
               </div>
               <div className='mt-6'>Outlet Vijay Nagar</div>
               <div className='mt-6 font-bold'>30 - 35 min</div>
@@ -181,9 +216,9 @@ export default function Restaurant() {
                       <div className='mb-3'>
                         {qty > 0 ? (
                           <div className='btn w-32 h-9 bg-white m-auto font-bold text-lg flex justify-between items-center shadow-md'>
-                            <button className='text-green-400 text-2xl' onClick={() => add(Element.name, Element.restaurant_name, Element._id, Element.price)}>+</button>
-                            <p className='text-gray-500'>{qty}</p>
                             <button className='text-green-400 text-2xl' onClick={() => added(Element.name, Element.restaurant_name, Element._id, Element.price)}>-</button>
+                            <p className='text-gray-500'>{qty}</p>
+                            <button className='text-green-400 text-2xl' onClick={() => add(Element.name, Element.restaurant_name, Element._id, Element.price)}>+</button>
                           </div>
                         ) : (
                           <button className='text-green-600 border rounded-md w-32 h-9 bg-white font-bold text-lg'

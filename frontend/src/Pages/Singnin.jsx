@@ -27,7 +27,7 @@ export default function Singnin() {
         axios.post(`${url}admin_signin/admin_signin`, obj).then(result =>{
             if(result.data.success){
                 alert(result.data.message)
-                localStorage.setItem("admin", email)
+                localStorage.setItem("admin", result.data.id)
                 navigate('/Admin')
                
             }

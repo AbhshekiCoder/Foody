@@ -29,10 +29,10 @@ export default function Cart() {
       
         if(result.data.success){
             setData(result.data.dish)
-            setRestaurant(result.data.restaurant)
+            setRestaurant(result.data.restaurant[0])
             
             setTotal(result.data.total)
-            console.log(result.data.dish)       
+            console.log(result.data.restaurant)       
         }
     }catch(err){
         console.log(err.message)
@@ -80,9 +80,9 @@ export default function Cart() {
                setData("");
                setRestaurant("")
                setTotal("");
-               document.getElementById('wallet-icon').style.backgroundColor = "black";
-        document.querySelector('.payment-text').style.display = "block";
-        document.querySelector('.payment-btn').style.display = "none";
+              
+           document.querySelector('.payment-text').style.display = "block";
+           document.querySelector('.payment-btn').style.display = "none";
               
 			},
 			prefill: {

@@ -9,7 +9,7 @@ export default function Profile({logout}) {
 
     </div>
     <div className='p-3  '>
-    <Link to = "/" className='text-black text-md font-semibold hover:scale-150 hover:no-underline'>Order</Link>
+    <Link to = "/order" className='text-black text-md font-semibold hover:scale-150 hover:no-underline'>Order</Link>
 
 
     </div>

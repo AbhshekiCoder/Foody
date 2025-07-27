@@ -109,7 +109,7 @@ export default function Navbar({login, profile, logout}) {
 
     </div>
     <div className='flex h-full items-center  max-lg:hidden'>
-    {profile?<div className='flex items-center'><div className='rounded-circle flex justify-center items-center border h-9 w-9 mr-3 font-bold hover:cursor-pointer'  onMouseOver={profile_open}>{username?username[0]:''}</div><span className=' text-gray-500 font-semibold  hover:text-orange-600' >{username}</span></div>:<span className=' text-gray-500 font-semibold  hover:text-orange-600' onClick={login}>Login</span>}
+    {profile?<div className='flex items-center'><div className='rounded-circle flex justify-center items-center border h-9 w-9 mr-3 font-bold hover:cursor-pointer'  onMouseOver={profile_open}>{username?username[0]:''}</div><span className=' text-gray-500 font-semibold  hover:text-orange-600' >{username}</span></div>:<span className=' text-gray-500 font-semibold  hover:text-orange-600 hover:cursor-pointer' onClick={login}>Login</span>}
 
     </div>
     <div className='flex h-full items-center  max-lg:hidden'>

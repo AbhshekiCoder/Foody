@@ -11,25 +11,36 @@ export default function Search() {
     const [dishes, setDishes] = useState();
     const [count, setCount] = useState(Number(localStorage.getItem('count')) || 0);
     const [quantities, setQuantities] = useState({});
+    const [currentRestaurant, setCurrentRestaurant] = useState(localStorage.getItem('restaurant_id') || null);
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const cart = useSelector((state) => state.cart.value);
-    
+
     const getLocalQuantities = () => {
         const stored = {};
-        Object.keys(localStorage).forEach(key => {console.log((localStorage.getItem(key)))
+        Object.keys(localStorage).forEach(key => {
             if (!isNaN(localStorage.getItem(key))) {
                 stored[key] = Number(localStorage.getItem(key));
-               
             }
         });
         return stored;
     };
 
     useEffect(() => {
-      
         setQuantities(getLocalQuantities());
     }, []);
+
+    const clearCartFrontendOnly = () => {
+        Object.keys(localStorage).forEach(key => {
+            if (!isNaN(localStorage.getItem(key))) {
+                localStorage.removeItem(key);
+            }
+        });
+        setQuantities({});
+        setCount(0);
+        dispatch(dishCount(0));
+        localStorage.setItem('count', '0');
+    };
 
     const search = async (e) => {
         let input = e.target.value;
@@ -69,10 +80,16 @@ export default function Search() {
     };
 
     const add = async (name, restaurant_id, dish_id, price) => {
-       
         const token = localStorage.getItem('token');
+
+        if (currentRestaurant && currentRestaurant !== restaurant_id) {
+            clearCartFrontendOnly();
+        }
+
+        setCurrentRestaurant(restaurant_id);
+        localStorage.setItem('restaurant_id', restaurant_id);
+
         const prevQty = quantities[dish_id] || 0;
-      
         const newQty = prevQty + 1;
 
         const obj = {
@@ -94,7 +111,7 @@ export default function Search() {
         if (result.data.success) {
             localStorage.setItem(dish_id, newQty);
             setQuantities(prev => ({ ...prev, [dish_id]: newQty }));
-            setCount(count + 1);
+            setCount(prev => prev + 1);
         }
     };
 
@@ -123,30 +140,26 @@ export default function Search() {
                 setQuantities(prev => ({ ...prev, [dish_id]: newQty }));
             } else {
                 localStorage.removeItem(dish_id);
-                const newQuantities = { ...quantities };
-                delete newQuantities[dish_id];
-                setQuantities(newQuantities);
+                setQuantities(prev => {
+                    const updated = { ...prev };
+                    delete updated[dish_id];
+                    return updated;
+                });
             }
-            setCount(count - 1);
-        } else {
-            localStorage.removeItem(dish_id);
-            const newQuantities = { ...quantities };
-            delete newQuantities[dish_id];
-            setQuantities(newQuantities);
-            setCount(count - 1)
+            setCount(prev => prev - 1);
         }
     };
 
     useEffect(() => {
         dispatch(dishCount(count));
         localStorage.setItem('count', count);
-        console.log(count)
     }, [count]);
-   function restaurant(id){
-        localStorage.setItem("id", id);
-        navigate('/restaurant')
 
-      }
+    function restaurant(id) {
+        localStorage.setItem("id", id);
+        navigate('/restaurant');
+    }
+
     return (
         <>
             {/* Modal */}
@@ -200,7 +213,6 @@ export default function Search() {
                     <div className='dish-content bg-blue-100 grid grid-cols-2 hidden mt-6 p-3 max-sm:grid-cols-1' style={{ columnGap: "20px", rowGap: "20px" }}>
                         {dish ? dish.map(Element => {
                             const qty = quantities[Element._id] || 0;
-                            console.log(qty)
                             return (
                                 <div className='p-3 bg-white rounded-2xl shadow-lg' key={Element._id}>
                                     <div className='flex justify-between border-b-2 border-dotted pb-3'>
@@ -221,9 +233,9 @@ export default function Search() {
                                             <div className='mb-2'>
                                                 {qty > 0 ? (
                                                     <div className='w-36 h-9 bg-white font-bold text-lg flex justify-between items-center shadow-md p-2'>
-                                                        <button className='text-green-400 text-2xl' onClick={() => add(Element.name, Element.id, Element._id, Element.price)}>+</button>
-                                                        <p className='text-gray-500'>{qty}</p>
                                                         <button className='text-green-400 text-2xl' onClick={() => added(Element.name, Element.id, Element._id, Element.price)}>-</button>
+                                                        <p className='text-gray-500'>{qty}</p>
+                                                        <button className='text-green-400 text-2xl' onClick={() => add(Element.name, Element.id, Element._id, Element.price)}>+</button>
                                                     </div>
                                                 ) : (
                                                     <button className='text-green-600 border rounded-md w-36 h-9 bg-white font-bold text-lg' onClick={() => add(Element.name, Element.id, Element._id, Element.price)}>Add</button>
