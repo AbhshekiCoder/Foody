@@ -10,8 +10,8 @@ const interested = async(req, res) =>{
  try{
     const result = await interestedModel.findOne({$and:[{restaurant: id, user_id: email.email}]});
     if(result){
-        const result1 =essage: "successfully updated"})
-        }
+        const result1 =({success: true,message: "successfully updated", data: result})
+        
         
     }
     else{
