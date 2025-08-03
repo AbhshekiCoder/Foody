@@ -4,15 +4,15 @@ import { useDispatch, useSelector } from 'react-redux'
 import url from '../misc/url.js'
 import { FaRupeeSign } from 'react-icons/fa'
 import { dishCount } from '../feature/cart.js'
+import { setCartDetail } from '../feature/cartDetail.js'
 export default function Cart() {
     let address = useSelector((state) => state.location.value);
     let user = useSelector((state) => state.name.value);
+    let cart = useSelector((state) => state.cartDetail.value);
     const dispatch = useDispatch()
 
 
-    let [data, setData] = useState();
-    let [restaurant, setRestaurant] = useState();
-    let [total, setTotal] = useState();
+    
 
     function btn(e){
         document.getElementById('wallet-icon').style.backgroundColor = "black";
@@ -20,31 +20,7 @@ export default function Cart() {
         document.querySelector('.payment-btn').style.display = "block";
         e.target.style.display = "none";
     }
-    let dish = async() =>{
-        console.log("hrllo")
-        let token = localStorage.getItem("token");
-        console.log(token)
-        try{
-        let result = await axios.get(`${url}cartDetail/${token}/cartDetail/${token}`);
-      
-        if(result.data.success){
-            setData(result.data.dish)
-            setRestaurant(result.data.restaurant)
-            
-            setTotal(result.data.total);
-           
-          
-        }
-    }catch(err){
-        console.log(err.message)
-    }
-
-    }
-    useEffect(() =>{
-        dish();
-
-    },[])
-
+   
     let payment = async() =>{
       
 
@@ -78,9 +54,7 @@ export default function Cart() {
                localStorage.setItem("count", 0);
                dispatch(dishCount(0))
 
-               setData("");
-               setRestaurant("")
-               setTotal("");
+              dispatch(setCartDetail(''));
               
            document.querySelector('.payment-text').style.display = "block";
            document.querySelector('.payment-btn').style.display = "none";
@@ -136,7 +110,7 @@ export default function Cart() {
     </div>
     <div className='p-3 payment-btn hidden'>
     <div className='text-lg font-bold'>Choose Payment Method</div>
-    <button className='text-lg font-bold h-10 text-white bg-green-600 mt-6 w-full' style={{backgroundColor: "rgb(27,166,114)"}} onClick = {payment} disabled={data?false:true} >
+    <button className='text-lg font-bold h-10 text-white bg-green-600 mt-6 w-full' style={{backgroundColor: "rgb(27,166,114)"}} onClick = {payment} disabled={cart.data?false:true} >
         Proceed to Pay
     </button>
 
@@ -146,16 +120,16 @@ export default function Cart() {
 
     </div>
     {
-        restaurant?
+        cart?
             <div className='col-md bg-white p-3 ' >
     <div className='flex'>
     <div className='w-16 h-16'>
-    <img src = {`data:${restaurant.type};base64,${restaurant.image}`} className='w-full h-full object-cover'/>
+    <img src = {`data:${cart.restaurant.type};base64,${cart.restaurant.image}`} className='w-full h-full object-cover'/>
 
     </div>
     <div className='ml-6 text-lg font-bold'>
-    {restaurant.restaurant_name}
-    <div className='text-gray-400 text-sm'>{restaurant.address}</div>
+    {cart.restaurant.restaurant_name}
+    <div className='text-gray-400 text-sm'>{cart.restaurant.address}</div>
     <div className='mt-6 w-10 border-b-2 border-black'></div>
     
     <div>
@@ -166,7 +140,7 @@ export default function Cart() {
 
     </div>
     <div  className = ' overflow-y-auto  overflow-visible border-black border-b-2' style={{height: "400px", overflowY: "auto"}}>
-    {data?data.map(Element =>(<div className='mt-3' >
+    {cart.data?cart.data.map(Element =>(<div className='mt-3' >
     <div className='flex justify-between items-center'>
     <div className='text-md text-gray-500 font-bold'>
     {Element.name}
@@ -219,7 +193,7 @@ export default function Cart() {
     </div>
     <div className='flex justify-between font-bold mt-3' >
     <div>Total Pay</div>
-    <div><i class="fa-solid fa-indian-rupee-sign mr-3"></i>{total + 20 + 34}</div>
+    <div><i class="fa-solid fa-indian-rupee-sign mr-3"></i>{cart.total + 20 + 34}</div>
 
     </div>
 

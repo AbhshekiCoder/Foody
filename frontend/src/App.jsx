@@ -30,6 +30,8 @@ import Offers from './Pages/Offers.jsx';
 import Help from './Pages/Help.jsx';
 import 'react-loading-skeleton/dist/skeleton.css'
 import Order from './Pages/Order.jsx';
+import { setCartDetail } from './feature/cartDetail.js';
+
 function App() {
   const name = useSelector(state => state.name.value)
   
@@ -128,6 +130,29 @@ function App() {
   
 
    },[name])
+    let dish = async() =>{
+           console.log("hrllo")
+           let token = localStorage.getItem("token");
+           console.log(token)
+           try{
+           let result = await axios.get(`${url}cartDetail/${token}/cartDetail/${token}`);
+         
+           if(result.data.success){
+               dispatch(setCartDetail({data: result.data.dish, restaurant: result.data.restaurant, total: result.data.total}))
+               
+             
+             
+           }
+       }catch(err){
+           console.log(err.message)
+       }
+   
+       }
+       useEffect(() =>{
+           dish();
+   
+       },[])
+   
   
   return (
     <>
