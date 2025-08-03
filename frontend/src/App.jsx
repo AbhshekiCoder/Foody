@@ -34,7 +34,7 @@ import { setCartDetail } from './feature/cartDetail.js';
 
 function App() {
   const name = useSelector(state => state.name.value)
-  
+  const cart = useSelector(state => state.cart.value)
    function login(){
     console.log("hello")
     document.querySelector('.signin').style.display = "block";
@@ -131,15 +131,15 @@ function App() {
 
    },[name])
     let dish = async() =>{
-           console.log("hrllo")
+           
            let token = localStorage.getItem("token");
            console.log(token)
            try{
            let result = await axios.get(`${url}cartDetail/${token}/cartDetail/${token}`);
-         
+           console.log(result)
            if(result.data.success){
                dispatch(setCartDetail({data: result.data.dish, restaurant: result.data.restaurant, total: result.data.total}))
-               
+               console.log(cart)
              
              
            }
@@ -151,7 +151,7 @@ function App() {
        useEffect(() =>{
            dish();
    
-       },[])
+       },[cart])
    
   
   return (

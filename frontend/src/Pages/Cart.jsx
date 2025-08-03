@@ -74,6 +74,29 @@ export default function Cart() {
         
 
     }
+    let dish = async() =>{
+               
+               let token = localStorage.getItem("token");
+               console.log(token)
+               try{
+               let result = await axios.get(`${url}cartDetail/${token}/cartDetail/${token}`);
+               console.log(result)
+               if(result.data.success){
+                   dispatch(setCartDetail({data: result.data.dish, restaurant: result.data.restaurant, total: result.data.total}))
+                   console.log(cart)
+                 
+                 
+               }
+           }catch(err){
+               console.log(err.message)
+           }
+       
+           }
+           useEffect(() =>{
+               dish();
+       
+           },[cart])
+       
   return (
     <div  className='w-full  h-screen pt-6 pb-3' style={{backgroundColor: "rgb(233,236,238)"}}>
     <div className='max-w-7xl m-auto row max-md:w-full ' style={{backgroundColor: "rgb(233,236,238)"}}>
@@ -168,7 +191,7 @@ export default function Cart() {
     <div className='text-sm font-bold '>Bill Details</div>
     <div className='mt-3 flex justify-between'>
         <div>item total</div>
-        <div className='flex items-center'>  <FaRupeeSign className=' ' /> {total}</div>
+        <div className='flex items-center'>  <FaRupeeSign className=' ' /> {cart.total}</div>
     </div>
     <div className='mt-3 flex justify-between'>
         <div>Deliver Fee</div>
