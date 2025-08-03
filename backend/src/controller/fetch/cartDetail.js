@@ -30,10 +30,10 @@ let cart_detail = async(req ,res ) =>{
 
     ])
    
-    let result1 = await admin.find({"restaurant_name": result[0].restaurant});
+    let result1 = await admin.findById(result[0].restaurant);
    
     let total  = result2[0].total * result2[0].count;
-       console.log(result1)
+     
         if(result ){
         
             res.send({success: true, restaurant: result1, dish: result,  total: total })

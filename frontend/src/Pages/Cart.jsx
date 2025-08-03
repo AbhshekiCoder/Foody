@@ -29,10 +29,11 @@ export default function Cart() {
       
         if(result.data.success){
             setData(result.data.dish)
-            setRestaurant(result.data.restaurant[0])
+            setRestaurant(result.data.restaurant)
             
-            setTotal(result.data.total)
-            console.log(result.data.restaurant)       
+            setTotal(result.data.total);
+           
+          
         }
     }catch(err){
         console.log(err.message)

@@ -147,7 +147,7 @@ export default function Restaurant() {
 
   let interested = async(id) =>{
     const token = localStorage.getItem('token');
-  
+s
     const result = await axios.post(`${url}interested/interested`, {id: id, token: token},{
       headers:{
         "Authorization": `Bearer ${token}`,
@@ -155,7 +155,9 @@ export default function Restaurant() {
       }
 
     })
+     console.log(result.data)
     if(result.data.success){
+     
       setisIntrested(true)
     }
     else{

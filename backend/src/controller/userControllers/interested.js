@@ -6,12 +6,15 @@ const interested = async(req, res) =>{
     const {id, token} = req.body;
     
     const email = jwt.decode(token);
-    console.log(id, email)
+ 
  try{
     const result = await interestedModel.findOne({$and:[{restaurant: id, user_id: email.email}]});
+    console.log(result);
     if(result){
-        const result1 =({success: true,message: "successfully updated", data: result})
-        
+        const result1 = await interestedModel.deleteOne({$and:[{restaurant: id, user_id: email.email}]});
+
+        res.send({success: false, message: "successfully updated", data: result})
+    
         
     }
     else{
