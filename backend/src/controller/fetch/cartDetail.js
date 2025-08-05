@@ -14,7 +14,7 @@ let cart_detail = async(req ,res ) =>{
 
     
     let result = await dishModel.find({user_id: email.email});
-    console.log(result, email )
+  
     
     if(result){
         
@@ -30,8 +30,8 @@ let cart_detail = async(req ,res ) =>{
 
     ])
    
-    let result1 = await admin.findOne({restaurant_name:result[0].restaurant});
-   
+    let result1 = await admin.findById(result[0].restaurant);
+
     let total  = result2[0].total * result2[0].count;
      
         if(result ){

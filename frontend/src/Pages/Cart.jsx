@@ -10,6 +10,7 @@ export default function Cart() {
     let user = useSelector((state) => state.name.value);
     let cart = useSelector((state) => state.cartDetail.value);
     const dispatch = useDispatch()
+    console.log(cart)
 
 
     
@@ -86,6 +87,8 @@ export default function Cart() {
                    console.log(cart)
                  
                  
+               }else{
+                dispatch(setCartDetail(''))
                }
            }catch(err){
                console.log(err.message)
@@ -95,7 +98,7 @@ export default function Cart() {
            useEffect(() =>{
                dish();
        
-           },[cart])
+           },[])
        
   return (
     <div  className='w-full  h-screen pt-6 pb-3' style={{backgroundColor: "rgb(233,236,238)"}}>

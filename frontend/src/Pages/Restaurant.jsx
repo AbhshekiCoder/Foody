@@ -5,10 +5,12 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/effect-cards';
 import { EffectCards } from 'swiper/modules';
-import { Loader } from 'rsuite';
 import { useDispatch, useSelector } from 'react-redux';
 import { dishCount } from '../feature/cart';
-import { FaHeart, FaRegHeart } from 'react-icons/fa';
+import { FaHeart, FaRegHeart, FaStar, FaRupeeSign, FaSearch } from 'react-icons/fa';
+import { MdOutlineDeliveryDining } from 'react-icons/md';
+import { IoLocationOutline } from 'react-icons/io5';
+
 
 export default function Restaurant() {
   const [data, setData] = useState();
@@ -169,77 +171,156 @@ export default function Restaurant() {
 
   return (
     <>
-      <div className='max-w-24 h-24 absolute fixed' style={{ marginLeft: "83%", top: "70%" }}>
-        <h1 className='text-lg flex justify-center'>Menu</h1>
-        <Swiper effect={'cards'} grabCursor={true} modules={[EffectCards]} className="mySwiper w-full h-full">
-          {dish ? dish.map(Element => (
-            <SwiperSlide className='bg-green-500 rounded-lg flex text-center items-center text-white font-bold p-1' key={Element._id}>
+       <div className='fixed z-10 right-4 bottom-24 w-24 h-24 shadow-xl rounded-lg bg-white border border-orange-200'>
+        <h1 className='text-sm font-bold text-center pt-1 text-orange-600'>Menu</h1>
+        <Swiper 
+          effect={'cards'} 
+          grabCursor={true} 
+          modules={[EffectCards]} 
+          className="h-20 w-full"
+        >
+          {dish?.map(Element => (
+            <SwiperSlide 
+              className='bg-gradient-to-r from-orange-500 to-orange-400 rounded-lg flex items-center justify-center text-center text-white font-bold p-1 text-xs' 
+              key={Element._id}
+            >
               {Element.name}
             </SwiperSlide>
-          )) : ''}
+          ))}
         </Swiper>
       </div>
 
-      <div className='mt-16'>
-        <div className='max-w-4xl m-auto'>
-          <div className='p-3'>
-            <div className='text-xl font-bold'>{data ? data.restaurant_name : ''}</div>
-            <div className='rounded-md mt-6 shadow-lg p-3'>
-              <div className='font-bold flex justify-between'>
-               <div> <i className="fa-solid fa-star rounded-circle p-1 bg-green-500 text-white mr-3"></i>3.11 rating</div><div>{isinterested?<FaHeart className='text-xl text-red-500' onClick={() => interested(data._id)} />:<FaRegHeart className='text-xl text-red-500' onClick={() => interested(data._id)} />}</div>
+      <div className='mt-16 pb-16 max-w-4xl mx-auto px-4'>
+        {/* Restaurant Header */}
+        <div className='p-4 bg-white rounded-xl shadow-md'>
+          <div className='flex justify-between items-start'>
+            <div>
+              <h1 className='text-2xl font-bold text-gray-800'>{data?.restaurant_name || ''}</h1>
+              <div className='flex items-center mt-2 text-gray-500'>
+                <IoLocationOutline className='mr-1' />
+                <span className='text-sm'>{data?.address || 'Outlet Vijay Nagar'}</span>
               </div>
-              <div className='mt-6'>Outlet Vijay Nagar</div>
-              <div className='mt-6 font-bold'>30 - 35 min</div>
             </div>
+            <button 
+              className='text-2xl p-2'
+              onClick={() => interested(data?._id)}
+            >
+              {isinterested ? (
+                <FaHeart className='text-red-500 animate-pulse' />
+              ) : (
+                <FaRegHeart className='text-red-500 hover:text-red-600' />
+              )}
+            </button>
           </div>
 
-          <div className='mt-16'>
-            <div className='flex justify-center text-lg text-gray-400'>Menu</div>
-            <div className='border flex rounded-lg bg-gray-100 p-1 items-center'>
-              <input type='text' placeholder='search any dishes' className='w-11/12 h-10 outline-none bg-gray-100' onChange={dish_name} />
-              <i className="fa-solid fa-magnifying-glass mr-3 text-orange-600 ml-6"></i>
+          {/* Restaurant Info Card */}
+          <div className='mt-4 rounded-xl bg-orange-50 p-4 border border-orange-100'>
+            <div className='flex items-center mb-3'>
+              <div className='bg-orange-500 text-white rounded-full w-6 h-6 flex items-center justify-center mr-2'>
+                <FaStar className='text-xs' />
+              </div>
+              <span className='font-bold text-gray-700'>3.11 rating</span>
             </div>
-
-            <div className='mt-6 p-3 border-b-2'>
-              {dish ? dish.map(Element => {
-                const qty = quantities[Element._id] || 0;
-                return (
-                  <div className='flex justify-between p-3 pb-6 border-b-2' key={Element._id}>
-                    <div>
-                      <div className='text-lg font-bold text-gray-600'>{Element.name}</div>
-                      <div className='mt-6'><i className="fa-solid fa-indian-rupee-sign mr-3"></i>{Element.price}</div>
-                      <div className='mt-6'><i className="fa-solid fa-star text-green-600 text-sm mr-3"></i>5</div>
-                      <div className='mt-3 text-gray-400 font-bold'>
-                        {Element.description.substring(0, 90)}<button className='ml-3 text-gray-600'>...More</button>
-                      </div>
-                    </div>
-
-                    <div className='flex flex-col items-center'>
-                      <div className='mb-3'>
-                        {qty > 0 ? (
-                          <div className='btn w-32 h-9 bg-white m-auto font-bold text-lg flex justify-between items-center shadow-md'>
-                            <button className='text-green-400 text-2xl' onClick={() => added(Element.name, Element.restaurant_name, Element._id, Element.price)}>-</button>
-                            <p className='text-gray-500'>{qty}</p>
-                            <button className='text-green-400 text-2xl' onClick={() => add(Element.name, Element.restaurant_name, Element._id, Element.price)}>+</button>
-                          </div>
-                        ) : (
-                          <button className='text-green-600 border rounded-md w-32 h-9 bg-white font-bold text-lg'
-                            onClick={() => add(Element.name, Element.restaurant_name, Element._id, Element.price)}>
-                            Add
-                          </button>
-                        )}
-                      </div>
-                      <div className='w-36 h-36 rounded-lg'>
-                        <img src={`data:${Element.type};base64,${Element.image}`} className='w-full h-full rounded-lg object-cover' />
-                      </div>
-                    </div>
-                  </div>
-                );
-              }) : <Loader />}
+            
+            <div className='flex items-center text-gray-600'>
+              <MdOutlineDeliveryDining className='mr-2 text-lg' />
+              <span className='font-medium'>30-35 min • Free delivery</span>
             </div>
           </div>
         </div>
-        <div className='message text-xl font-bold flex justify-center'></div>
+
+        {/* Menu Section */}
+        <div className='mt-8'>
+          <h2 className='text-center text-xl font-bold text-orange-600 mb-6'>Menu</h2>
+          
+          {/* Search Input */}
+          <div className='relative'>
+            <input 
+              type='text' 
+              placeholder='Search any dish...' 
+              className='w-full h-12 pl-12 pr-4 rounded-full border border-orange-300 focus:ring-2 focus:ring-orange-400 focus:border-transparent outline-none transition-all'
+              onChange={dish_name}
+            />
+            <FaSearch className='absolute left-4 top-3.5 text-orange-500 text-lg' />
+          </div>
+
+          {/* Dish List */}
+          <div className='mt-6 space-y-6'>
+            {dish ? dish.map(Element => {
+              const qty = quantities[Element._id] || 0;
+              return (
+                <div 
+                  className='bg-white rounded-xl shadow-md overflow-hidden p-4 transition-all hover:shadow-lg'
+                  key={Element._id}
+                >
+                  <div className='flex justify-between'>
+                    {/* Dish Info */}
+                    <div className='w-2/3 pr-4'>
+                      <h3 className='text-lg font-bold text-gray-800'>{Element.name}</h3>
+                      
+                      <div className='flex items-center mt-2 text-orange-600 font-medium'>
+                        <FaRupeeSign className='mr-1' />
+                        <span>{Element.price}</span>
+                      </div>
+                      
+                      <div className='flex items-center mt-2 text-yellow-500'>
+                        <FaStar className='mr-1 text-sm' />
+                        <span className='text-gray-700'>5</span>
+                      </div>
+                      
+                      <p className='mt-3 text-gray-500 text-sm'>
+                        {Element.description.substring(0, 90)}
+                        {Element.description.length > 90 && (
+                          <button className='ml-1 text-orange-500 font-medium'>...More</button>
+                        )}
+                      </p>
+                    </div>
+                    
+                    {/* Dish Image and Add Button */}
+                    <div className='flex flex-col items-end'>
+                      <div className='w-24 h-24 rounded-lg overflow-hidden shadow-md mb-3'>
+                        <img 
+                          src={`data:${Element.type};base64,${Element.image}`} 
+                          className='w-full h-full object-cover'
+                          alt={Element.name}
+                        />
+                      </div>
+                      
+                      {qty > 0 ? (
+                        <div className='flex items-center bg-orange-50 rounded-full px-2'>
+                          <button 
+                            className='text-orange-600 w-8 h-8 flex items-center justify-center hover:bg-orange-100 rounded-full transition-colors'
+                            onClick={() => added(Element.name, Element.restaurant_name, Element._id, Element.price)}
+                          >
+                            -
+                          </button>
+                          <span className='mx-1 w-6 text-center font-medium'>{qty}</span>
+                          <button 
+                            className='text-orange-600 w-8 h-8 flex items-center justify-center hover:bg-orange-100 rounded-full transition-colors'
+                            onClick={() => add(Element.name, Element.restaurant_name, Element._id, Element.price)}
+                          >
+                            +
+                          </button>
+                        </div>
+                      ) : (
+                        <button 
+                          className='bg-orange-500 hover:bg-orange-600 text-white rounded-full px-4 py-1.5 text-sm font-medium transition-colors'
+                          onClick={() => add(Element.name, Element.restaurant_name, Element._id, Element.price)}
+                        >
+                          Add
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            }) : (
+              <div className='flex justify-center py-10'>
+                <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500'></div>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </>
   );

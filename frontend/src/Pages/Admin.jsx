@@ -88,7 +88,7 @@ export default function Admin() {
     formData.append("name", form.name.value);
     formData.append("description", form.description.value);
     formData.append("file", file);
-    formData.append("email", localStorage.getItem('admin'));
+    formData.append("id", localStorage.getItem('admin'));
     formData.append("price", form.price.value);
     formData.append("type", file.type);
 

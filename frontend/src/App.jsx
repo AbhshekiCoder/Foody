@@ -142,6 +142,8 @@ function App() {
                console.log(cart)
              
              
+           }else{
+            dispatch(setCartDetail(""))
            }
        }catch(err){
            console.log(err.message)
@@ -151,7 +153,7 @@ function App() {
        useEffect(() =>{
            dish();
    
-       },[cart])
+       },[])
    
   
   return (

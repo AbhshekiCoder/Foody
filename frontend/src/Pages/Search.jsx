@@ -4,7 +4,8 @@ import url from '../misc/url.js';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { dishCount } from '../feature/cart';
-
+import { FaRupeeSign, FaPlus, FaMinus, FaArrowRight, FaSearch, FaTimes } from 'react-icons/fa';
+import { setCartDetail } from '../feature/cartDetail.js';
 export default function Search() {
     const [data, setData] = useState();
     const [dish, setDish] = useState();
@@ -81,6 +82,10 @@ export default function Search() {
 
     const add = async (name, restaurant_id, dish_id, price) => {
         const token = localStorage.getItem('token');
+        if(!token){
+            alert("login first");
+            return;
+        }
 
         if (currentRestaurant && currentRestaurant !== restaurant_id) {
             clearCartFrontendOnly();
@@ -112,6 +117,7 @@ export default function Search() {
             localStorage.setItem(dish_id, newQty);
             setQuantities(prev => ({ ...prev, [dish_id]: newQty }));
             setCount(prev => prev + 1);
+            cartDetail()
         }
     };
 
@@ -146,40 +152,73 @@ export default function Search() {
                     return updated;
                 });
             }
+            cartDetail()
             setCount(prev => prev - 1);
+
         }
     };
 
     useEffect(() => {
         dispatch(dishCount(count));
         localStorage.setItem('count', count);
+        cartDetail()
     }, [count]);
 
     function restaurant(id) {
         localStorage.setItem("id", id);
         navigate('/restaurant');
     }
+    let cartDetail = async() =>{
+           
+           let token = localStorage.getItem("token");
+           console.log(token)
+           try{
+           let result = await axios.get(`${url}cartDetail/${token}/cartDetail/${token}`);
+           console.log(result)
+           if(result.data.success){
+               dispatch(setCartDetail({data: result.data.dish, restaurant: result.data.restaurant, total: result.data.total}))
+              
+             
+             
+           }else{
+            dispatch(setCartDetail(''))
+           }
+       }catch(err){
+           console.log(err.message)
+       }
+   
+       }
+      
+   
 
     return (
         <>
-            {/* Modal */}
-            <div className='modal detail w-100 h-100 hidden'>
-                <div className='w-full h-full flex justify-center items-center border'>
-                    <div className='bg-white w-96 h-fit rounded-md p-3'>
-                        <div className='flex justify-end'>
-                            <i className="fa-solid fa-xmark text-gray-500 text-xl" onClick={() => { document.querySelector('.detail').style.display = "none" }}></i>
+           <div className='fixed inset-0 bg-black bg-opacity-50 z-50 hidden detail'>
+                <div className='flex items-center justify-center min-h-screen p-4'>
+                    <div className='bg-white w-full max-w-md rounded-xl shadow-2xl overflow-hidden'>
+                        <div className='flex justify-end p-4'>
+                            <button 
+                                className='text-gray-500 hover:text-orange-600 transition-colors'
+                                onClick={() => { document.querySelector('.detail').style.display = "none" }}
+                            >
+                                <FaTimes className='text-xl' />
+                            </button>
                         </div>
-                        <div>
+                        <div className='p-4'>
                             {dishes ? dishes.map(Element => (
-                                <div key={Element._id}>
-                                    <div className='w-full h-60'>
-                                        <img src={`data:${Element.type};base64,${Element.image}`} className='w-full h-full' />
+                                <div key={Element._id} className='space-y-4'>
+                                    <div className='w-full h-64 rounded-xl overflow-hidden'>
+                                        <img 
+                                            src={`data:${Element.type};base64,${Element.image}`} 
+                                            className='w-full h-full object-cover'
+                                            alt={Element.name}
+                                        />
                                     </div>
-                                    <div className='mt-6 text-lg font-bold'>{Element.name}</div>
-                                    <div className='text-lg font-bold'>
-                                        <i className="fa-solid fa-indian-rupee-sign mr-3"></i> {Element.price}
+                                    <div className='text-xl font-bold text-gray-800'>{Element.name}</div>
+                                    <div className='flex items-center text-lg font-bold text-orange-600'>
+                                        <FaRupeeSign className='mr-1' /> {Element.price}
                                     </div>
-                                    <div className='text-gray-400 font-bold'>{Element.description}</div>
+                                    <div className='text-gray-500'>{Element.description}</div>
                                 </div>
                             )) : ''}
                         </div>
@@ -187,72 +226,129 @@ export default function Search() {
                 </div>
             </div>
 
-            {/* Main Search */}
-            <div className='mt-36 max-md:p-3'>
-                <div className='max-w-3xl m-auto flex border items-center rounded-md p-2'>
-                    <input type='text' className='w-11/12 h-6 outline-none pl-3' placeholder='search for restaurant and dish' onChange={search} />
-                    <i className="fa-solid fa-magnifying-glass mr-3 text-orange-600 ml-6"></i>
-                </div>
-
-                <div className='mt-6 max-w-3xl m-auto'>
-                    <div className='mt-3 search-content'>
-                        {data ? data.map(Element => (
-                            <div className='flex mt-6 hover:bg-blue-100 hover:cursor-pointer' onClick={() => filter(Element.description ? 'dish' : 'restaurant', Element.name, Element._id)} key={Element._id}>
-                                <div className='w-16 h-16'>
-                                    <img src={`data:${Element.type};base64,${Element.image}`} className='w-full h-full rounded-md' />
-                                </div>
-                                <div className='ml-6'>
-                                    <div className='text-lg'>{Element.description ? Element.name : Element.restaurant_name}</div>
-                                    <div className='mt-3 text-gray-400'>{Element.description ? 'dish' : 'restaurant'}</div>
-                                </div>
-                            </div>
-                        )) : ''}
+            {/* Main Search - Enhanced */}
+            <div className='mt-24 max-md:px-4 max-md:mt-16'>
+                <div className='max-w-3xl mx-auto'>
+                    <div className='relative flex items-center border border-orange-300 rounded-full px-5 py-3 shadow-md hover:shadow-lg transition-shadow'>
+                        <input 
+                            type='text' 
+                            className='w-full bg-transparent outline-none pl-2 text-gray-700 placeholder-gray-400'
+                            placeholder='Search for restaurants and dishes...' 
+                            onChange={search} 
+                        />
+                        <FaSearch className='text-orange-500 text-xl' />
                     </div>
 
-                    {/* Dish List */}
-                    <div className='dish-content bg-blue-100 grid grid-cols-2 hidden mt-6 p-3 max-sm:grid-cols-1' style={{ columnGap: "20px", rowGap: "20px" }}>
-                        {dish ? dish.map(Element => {
-                            const qty = quantities[Element._id] || 0;
-                            return (
-                                <div className='p-3 bg-white rounded-2xl shadow-lg' key={Element._id}>
-                                    <div className='flex justify-between border-b-2 border-dotted pb-3'>
-                                        <div className='text-lg font-bold text-gray-500'>{Element.restaurant_name}</div>
-                                        <i className="fa-solid fa-arrow-right mr-3 hover:cursor-pointer" onClick={() =>{localStorage.setItem("id", Element.id); navigate('/restaurant')}}></i>
+                    <div className='mt-8'>
+                        <div className='message text-center text-lg font-medium text-gray-500 mt-6' id="message"></div>
+                        
+                        {/* Search Results - Enhanced */}
+                        <div className='search-content space-y-4'>
+                            {data?.map(Element => (
+                                <div 
+                                    className='flex items-center p-4 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow cursor-pointer'
+                                    onClick={() => filter(Element.description ? 'dish' : 'restaurant', Element.name, Element._id)}
+                                    key={Element._id}
+                                >
+                                    <div className='w-16 h-16 rounded-lg overflow-hidden flex-shrink-0'>
+                                        <img 
+                                            src={`data:${Element.type};base64,${Element.image}`} 
+                                            className='w-full h-full object-cover'
+                                            alt={Element.description ? Element.name : Element.restaurant_name}
+                                        />
                                     </div>
-                                    <div className='flex justify-between'>
-                                        <div>
-                                            <div className='mt-3 text-lg font-bold'>{Element.name}</div>
-                                            <div className='mt-3'>
-                                                <i className="fa-solid fa-indian-rupee-sign mr-3"></i>{Element.price}
-                                            </div>
-                                            <div className='mt-3'>
-                                                <button className='border rounded-xl flex p-1 items-center text-sm' onClick={() => btn(Element._id)}>More Details <i className="fa-solid fa-arrow-right ml-3 text-sm"></i></button>
-                                            </div>
+                                    <div className='ml-4'>
+                                        <div className='text-lg font-semibold text-gray-800'>
+                                            {Element.description ? Element.name : Element.restaurant_name}
                                         </div>
-                                        <div className='p-3 flex flex-col items-center'>
-                                            <div className='mb-2'>
-                                                {qty > 0 ? (
-                                                    <div className='w-36 h-9 bg-white font-bold text-lg flex justify-between items-center shadow-md p-2'>
-                                                        <button className='text-green-400 text-2xl' onClick={() => added(Element.name, Element.id, Element._id, Element.price)}>-</button>
-                                                        <p className='text-gray-500'>{qty}</p>
-                                                        <button className='text-green-400 text-2xl' onClick={() => add(Element.name, Element.id, Element._id, Element.price)}>+</button>
-                                                    </div>
-                                                ) : (
-                                                    <button className='text-green-600 border rounded-md w-36 h-9 bg-white font-bold text-lg' onClick={() => add(Element.name, Element.id, Element._id, Element.price)}>Add</button>
-                                                )}
-                                            </div>
-                                            <div className='w-40 h-40 rounded-lg'>
-                                                <img src={`data:${Element.type};base64,${Element.image}`} className='w-full h-full rounded-lg object-cover' />
-                                            </div>
+                                        <div className='mt-1 text-sm text-orange-500 font-medium'>
+                                            {Element.description ? 'Dish' : 'Restaurant'}
                                         </div>
                                     </div>
                                 </div>
-                            );
-                        }) : ''}
-                    </div>
+                            ))}
+                        </div>
 
-                    {/* Message */}
-                    <div className='message text-xl font-bold text-gray-400 mt-6 flex justify-center' id="message"></div>
+                        {/* Dish List - Enhanced */}
+                        <div className='dish-content hidden mt-8 grid grid-cols-1 md:grid-cols-2 gap-6'>
+                            {dish?.map(Element => {
+                                const qty = quantities[Element._id] || 0;
+                                return (
+                                    <div 
+                                        className='bg-white rounded-2xl shadow-lg overflow-hidden transition-transform hover:-translate-y-1'
+                                        key={Element._id}
+                                    >
+                                        <div className='p-4 border-b border-gray-100 flex justify-between items-center'>
+                                            <div className='font-bold text-gray-700'>{Element.restaurant_name}</div>
+                                            <button 
+                                                className='text-orange-500 hover:text-orange-700 flex items-center'
+                                                onClick={() => {
+                                                    localStorage.setItem("id", Element.id); 
+                                                    navigate('/restaurant')
+                                                }}
+                                            >
+                                                View <FaArrowRight className='ml-2 text-sm' />
+                                            </button>
+                                        </div>
+                                        
+                                        <div className='p-4 flex flex-col md:flex-row'>
+                                            <div className='md:w-2/3 pr-4'>
+                                                <div className='text-lg font-bold text-gray-800'>{Element.name}</div>
+                                                <div className='flex items-center mt-2 text-orange-600 font-medium'>
+                                                    <FaRupeeSign /> {Element.price}
+                                                </div>
+                                                <div className='mt-4'>
+                                                    <button 
+                                                        className='flex items-center text-orange-500 hover:text-orange-700 font-medium'
+                                                        onClick={() => btn(Element._id)}
+                                                    >
+                                                        More Details <FaArrowRight className='ml-2 text-xs' />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            
+                                            <div className='mt-4 md:mt-0 flex flex-col items-end'>
+                                                <div className='w-28 h-28 rounded-lg overflow-hidden shadow-md'>
+                                                    <img 
+                                                        src={`data:${Element.type};base64,${Element.image}`} 
+                                                        className='w-full h-full object-cover'
+                                                        alt={Element.name}
+                                                    />
+                                                </div>
+                                                
+                                                <div className='mt-4'>
+                                                    {qty > 0 ? (
+                                                        <div className='flex items-center bg-orange-50 rounded-full px-3 py-1'>
+                                                            <button 
+                                                                className='text-orange-600 text-xl w-8 h-8 flex items-center justify-center hover:bg-orange-100 rounded-full'
+                                                                onClick={() => added(Element.name, Element.id, Element._id, Element.price)}
+                                                            >
+                                                                <FaMinus className='text-sm' />
+                                                            </button>
+                                                            <span className='mx-2 text-gray-700 font-bold'>{qty}</span>
+                                                            <button 
+                                                                className='text-orange-600 text-xl w-8 h-8 flex items-center justify-center hover:bg-orange-100 rounded-full'
+                                                                onClick={() => add(Element.name, Element.id, Element._id, Element.price)}
+                                                            >
+                                                                <FaPlus className='text-sm' />
+                                                            </button>
+                                                        </div>
+                                                    ) : (
+                                                        <button 
+                                                            className='bg-orange-500 hover:bg-orange-600 text-white rounded-full px-4 py-2 font-medium transition-colors'
+                                                            onClick={() => add(Element.name, Element.id, Element._id, Element.price)}
+                                                        >
+                                                            Add
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
                 </div>
             </div>
         </>

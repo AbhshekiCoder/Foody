@@ -46,19 +46,19 @@ export default function Sidebar() {
     </div>: ''}
   
     </Link>
-    <Link to = "/" className='hover:no-underline'>  
+    <Link to = "/corporate" className='hover:no-underline'>  
       <div className='flex  items-center border-b mt-3  p-3'>
-       <i class="fa-solid fa-bag-shopping mr-3 text-gray-600 "></i><p className=' text-gray-500 font-semibold hover:text-orange-600'>Diggy Corporate</p>
+       <i class="fa-solid fa-bag-shopping mr-3 text-gray-600 "></i><p className=' text-gray-500 font-semibold hover:text-orange-600'>Foody Corporate</p>
 
       </div>
       </Link>
-      <Link to = "/" className='hover:no-underline'>  
+      <Link to = "/offers" className='hover:no-underline'>  
       <div className='flex items-center  border-b mt-3  p-3'>
         <i class="fa-solid fa-gift mr-3 text-gray-600"></i><span className=' text-gray-500 font-semibold  hover:text-orange-600'>Offer</span>
 
        </div>
        </Link>
-       <Link to = "/" className='hover:no-underline'>  
+       <Link to = "/help" className='hover:no-underline'>  
        <div className='flex items-center border-b mt-3  p-3'>
        <i class="fa-solid fa-circle-info mr-3 text-gray-600"></i><span className=' text-gray-500 font-semibold  hover:text-orange-600'>Help</span>
 

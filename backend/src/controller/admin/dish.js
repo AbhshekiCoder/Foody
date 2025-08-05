@@ -8,10 +8,10 @@ import admin from "../../modal/admin.js";
 
 
 let dish = async(req, res) =>{
-    let {name, description, email, type, price} = req.body;
-   
-     let result1 = await  admin.findOne({email: email});
-   
+    let {name, description, id, type, price} = req.body;
+  
+     let result1 = await  admin.findById(id);
+ 
      let _filename = fileURLToPath(import.meta.url); 
      let __dirname = path.dirname(_filename)
     let dish = new dish_Model( {
