@@ -86,14 +86,14 @@ export default function Navbar({login, profile, logout}) {
     <Link to ="/"><img src = {logo} className=' h-10 w-32 hover:h-11 '/> </Link> 
 
     </div>
-    <div className='address text-lg font-semibold text-gray-400 max-lg:hidden' onClick={() =>{
+    <div className='address text-lg font-semibold text-gray-400 max-lg:hidden hover:cursor-pointer' onClick={() =>{
       document.querySelector('.location').style.display = "block"
       console.log("hello")
     }}>
      {location.substr(0, 30) + '...'}
     </div>
     <div className='flex h-full items-center  max-lg:hidden no-underline'>
-    <i class="fa-solid fa-bag-shopping mr-3 text-gray-600 "></i><Link to = '/corporate' className=' text-gray-500 font-semibold hover:text-orange-600  hover:no-underline  '>Diggy Corporate</Link>
+    <i class="fa-solid fa-bag-shopping mr-3 text-gray-600 "></i><Link to = '/corporate' className=' text-gray-500 font-semibold hover:text-orange-600  hover:no-underline  '>Foody Corporate</Link>
 
     </div>
     <div className='search flex h-full items-center  max-lg:hidden'>
